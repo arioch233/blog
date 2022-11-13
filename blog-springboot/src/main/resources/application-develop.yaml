@@ -51,5 +51,5 @@ upload:
     # nginx映射本地文件路径，无域名则为 ip:82
     url: http://localhost:9090/file/
     # 本地文件存储路径
-    path: E:\JavaProgram\SpringBoot\blog2.0\blog-springboot\files
+    path: E:\JavaProgram\SpringBoot\blog2.0\blog-springboot\files\
 

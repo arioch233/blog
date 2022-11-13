@@ -25,7 +25,7 @@ public class CommonConst {
     /**
      * 常见图片格式类型
      */
-    public static final String[] IMAGE_TYPE_LIST = {"jpg", "jpeg", "png", "gif"};
+    public static final String[] IMAGE_TYPE_LIST = {".jpg", ".jpeg", ".png", ".gif"};
 
 
     /**
