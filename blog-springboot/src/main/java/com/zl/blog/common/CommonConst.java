@@ -54,4 +54,19 @@ public class CommonConst {
      */
     public static final Integer DEFAULT_CONFIG_ID = 1;
 
+    /**
+     * 省
+     */
+    public static final String PROVINCE = "省";
+
+    /**
+     * 市
+     */
+    public static final String CITY = "市";
+
+    /**
+     * 未知的
+     */
+    public static final String UNKNOWN = "未知";
+
 }
