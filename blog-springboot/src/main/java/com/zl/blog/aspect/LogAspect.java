@@ -29,7 +29,7 @@ public class LogAspect {
      * 包路径内点与点之间也可以使用*代表所有
      * 第一个*为返回值
      */
-    @Pointcut("execution(* com.zl.blog.controller.*.*.*(..))")
+    @Pointcut("execution(* com.zl.blog.controller.*.*(..))")
     public void log() {
     }
 
