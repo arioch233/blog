@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 后台文件
+ * 后台文件信息传输对象
  *
  * @author 冷血毒舌
  * @create 2022/11/13 0:12
