@@ -1,9 +1,5 @@
 package com.zl.blog.controller;
 
-/**
- * @author 冷血毒舌
- * @create 2022/11/15 0:15
- */
 
 import com.zl.blog.common.Result;
 import com.zl.blog.pojo.vo.ConditionVO;
@@ -18,6 +14,9 @@ import javax.validation.Valid;
 
 /**
  * 菜单控制器
+ *
+ * @author 冷血毒舌
+ * @create 2022/11/15 0:15
  */
 @Api(tags = "菜单模块")
 @RestController

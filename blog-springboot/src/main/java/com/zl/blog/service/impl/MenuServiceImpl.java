@@ -113,6 +113,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
         this.saveOrUpdate(menu);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteMenu(Integer menuId) {
         // 查询是否有角色关联
