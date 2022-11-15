@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.blog.mapper.RoleMapper">
+
+    <resultMap id="BaseResultMap" type="com.zl.blog.entity.Role">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleLabel" column="role_label" jdbcType="VARCHAR"/>
+        <result property="isDisable" column="is_disable" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <resultMap id="RoleResultMap" type="com.zl.blog.pojo.dto.RoleDTO">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="roleName" column="role_name" jdbcType="VARCHAR"/>
+        <result property="roleLabel" column="role_label" jdbcType="VARCHAR"/>
+        <result property="isDisable" column="is_disable" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <collection property="menuIdList" ofType="java.lang.Integer">
+            <constructor>
+                <arg column="menu_id"/>
+            </constructor>
+        </collection>
+        <collection property="resourceIdList" ofType="java.lang.Integer">
+            <constructor>
+                <arg column="resource_id"/>
+            </constructor>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,role_name,role_label,
+        is_disable,create_time,update_time
+    </sql>
+    <select id="listRoles" resultMap="RoleResultMap">
+        SELECT
+        r.id,
+        r.role_name,
+        r.role_label,
+        r.is_disable,
+        r.create_time,
+        r.update_time,
+        rm.menu_id,
+        rr.resource_id
+        FROM
+        (
+        SELECT
+        id,
+        role_name,
+        role_label,
+        is_disable,
+        create_time,
+        update_time
+        FROM
+        sys_role
+        <where>
+            <if test="condition.keywords != null">
+                role_name like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+        Limit #{current}, #{size}
+        ) r
+        LEFT JOIN sys_role_resource rr ON rr.role_id = r.id
+        LEFT JOIN sys_role_menu rm ON rm.role_id = r.id
+        ORDER BY r.id
+    </select>
+</mapper>
