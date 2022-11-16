@@ -32,9 +32,9 @@ public class IResource implements Serializable {
     private String resourceName;
 
     /**
-     * 权限
+     * 权限路径
      */
-    private String permission;
+    private String url;
 
     /**
      * 请求方式

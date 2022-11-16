@@ -7,7 +7,7 @@
     <resultMap id="BaseResultMap" type="com.zl.blog.entity.IResource">
         <id property="id" column="id" jdbcType="INTEGER"/>
         <result property="resourceName" column="resource_name" jdbcType="VARCHAR"/>
-        <result property="permission" column="url" jdbcType="VARCHAR"/>
+        <result property="url" column="url" jdbcType="VARCHAR"/>
         <result property="requestMethod" column="request_method" jdbcType="VARCHAR"/>
         <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
         <result property="isAnonymous" column="is_anonymous" jdbcType="TINYINT"/>
@@ -16,7 +16,7 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,resource_name,permission,
+        id,resource_name,url,
         request_method,parent_id,is_anonymous,
         create_time,update_time
     </sql>
