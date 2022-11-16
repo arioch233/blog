@@ -30,9 +30,9 @@ public class ResourceDTO {
     private String resourceName;
 
     /**
-     * 权限路径
+     * 权限
      */
-    private String url;
+    private String permission;
 
     /**
      * 请求方式

@@ -37,15 +37,15 @@ public class ResourceVO {
     private String resourceName;
 
     /**
-     * 路径
+     * 权限
      */
-    @ApiModelProperty(name = "url", value = "资源路径", required = true, dataType = "String")
-    private String url;
+    @ApiModelProperty(name = "permission", value = "权限", required = true, dataType = "String")
+    private String permission;
 
     /**
      * 请求方式
      */
-    @ApiModelProperty(name = "url", value = "资源路径", required = true, dataType = "String")
+    @ApiModelProperty(name = "requestMethod", value = "请求方式", required = true, dataType = "String")
     private String requestMethod;
 
     /**
