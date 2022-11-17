@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -35,8 +36,8 @@ public class UserAuthController {
      */
     @ApiOperation(value = "用户登录")
     @PostMapping("/login")
-    public Result login(@Valid @RequestBody UserVO user) {
-        return Result.success(userAuthService.login(user), "登录成功");
+    public Result login(@Valid @RequestBody UserVO user, HttpServletRequest request) {
+        return Result.success(userAuthService.login(user,request), "登录成功");
     }
 
 

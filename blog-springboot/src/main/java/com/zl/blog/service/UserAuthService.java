@@ -2,7 +2,10 @@ package com.zl.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zl.blog.entity.UserAuth;
+import com.zl.blog.pojo.dto.UserInfoDTO;
 import com.zl.blog.pojo.vo.UserVO;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 用户账号服务
@@ -33,7 +36,7 @@ public interface UserAuthService extends IService<UserAuth> {
      *
      * @param user
      */
-    String login(UserVO user);
+    UserInfoDTO login(UserVO user, HttpServletRequest request);
 
     /**
      * 登出

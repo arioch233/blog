@@ -10,23 +10,36 @@ import com.zl.blog.entity.UserAuth;
 import com.zl.blog.entity.UserInfo;
 import com.zl.blog.entity.UserRole;
 import com.zl.blog.exception.ServiceException;
+import com.zl.blog.mapper.RoleMapper;
 import com.zl.blog.mapper.UserAuthMapper;
 import com.zl.blog.mapper.UserInfoMapper;
 import com.zl.blog.mapper.UserRoleMapper;
+import com.zl.blog.pojo.dto.UserDetailDTO;
+import com.zl.blog.pojo.dto.UserInfoDTO;
 import com.zl.blog.pojo.vo.UserVO;
 import com.zl.blog.service.*;
+import com.zl.blog.utils.BeanCopyUtils;
+import com.zl.blog.utils.IpUtils;
 import com.zl.blog.utils.ShiroUtils;
+import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.zl.blog.common.CommonConst.DEFAULT_NICKNAME;
-import static com.zl.blog.common.RedisPrefixConst.USER_TOKEN;
+import static com.zl.blog.common.RedisPrefixConst.*;
 import static com.zl.blog.common.enums.StatusCodeEnum.USERNAME_NOT_EXIST;
+import static com.zl.blog.common.enums.ZoneEnum.SHANGHAI;
 
 /**
  * 用户账号服务实现
@@ -60,6 +73,9 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper, UserAuth>
     @Resource
     private UserRoleMapper userRoleMapper;
 
+    @Resource
+    private RoleMapper roleMapper;
+
     @Override
     public UserAuth getUserAuthByUsername(String username) {
         return getOne(new LambdaQueryWrapper<UserAuth>()
@@ -67,19 +83,77 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper, UserAuth>
     }
 
     @Override
-    public String login(UserVO user) {
+    public UserInfoDTO login(UserVO user, HttpServletRequest request) {
         UserAuth userAuth = getOne(new LambdaQueryWrapper<UserAuth>().eq(UserAuth::getUsername, user.getUsername()));
         if (Objects.isNull(userAuth)) {
             throw new ServiceException(USERNAME_NOT_EXIST);
         }
         // 密码加密校验
         if (ShiroUtils.verifyPassword(user.getPassword(), userAuth.getPassword())) {
+            UserDetailDTO userDetailDTO = convertUserDetail(userAuth, request);
+            UserInfoDTO userLoginDTO = BeanCopyUtils.copyObject(userDetailDTO, UserInfoDTO.class);
             String token = jwtProvider.createToken(userAuth.getUserInfoId());
+            userLoginDTO.setToken(token);
             // 将token存入redis
             redisService.hSet(USER_TOKEN, String.valueOf(userAuth.getUserInfoId()), token, jwtProvider.getExpire());
-            return token;
+            // 更新用户信息
+            updateUserInfo(userDetailDTO);
+            return userLoginDTO;
         }
         throw new ServiceException("账号或密码错误");
+    }
+
+    /**
+     * 封装用户登录信息
+     */
+    private UserDetailDTO convertUserDetail(UserAuth user, HttpServletRequest request) {
+        // 查询账号信息
+        UserInfo userInfo = userInfoMapper.selectById(user.getUserInfoId());
+        // 查询账号角色
+        List<String> roleList = roleMapper.listRolesByUserInfoId(userInfo.getId());
+        // 查询账号点赞信息
+        Set<Object> articleLikeSet = redisService.sMembers(ARTICLE_USER_LIKE + userInfo.getId());
+        Set<Object> commentLikeSet = redisService.sMembers(COMMENT_USER_LIKE + userInfo.getId());
+        // 获取设备信息
+        String ipAddress = IpUtils.getIpAddress(request);
+        String ipSource = IpUtils.getIpSource(ipAddress);
+        UserAgent userAgent = IpUtils.getUserAgent(request);
+        // 封装权限集合
+        return UserDetailDTO.builder()
+                .id(user.getId())
+                .loginType(user.getLoginType())
+                .userInfoId(userInfo.getId())
+                .username(user.getUsername())
+                .password(user.getPassword())
+                .email(userInfo.getEmail())
+                .roleList(roleList)
+                .nickname(userInfo.getNickname())
+                .avatar(userInfo.getAvatar())
+                .intro(userInfo.getIntro())
+                .webSite(userInfo.getWebSite())
+                .articleLikeSet(articleLikeSet)
+                .commentLikeSet(commentLikeSet)
+                .ipAddress(ipAddress)
+                .ipSource(ipSource)
+                .isDisable(userInfo.getIsDisable())
+                .browser(userAgent.getBrowser().getName())
+                .os(userAgent.getOperatingSystem().getName())
+                .lastLoginTime(LocalDateTime.now(ZoneId.of(SHANGHAI.getZone())))
+                .build();
+    }
+
+    /**
+     * 更新用户信息
+     */
+    @Async
+    public void updateUserInfo(UserDetailDTO userDetailDTO) {
+        UserAuth userAuth = UserAuth.builder()
+                .id(userDetailDTO.getId())
+                .ipAddress(userDetailDTO.getIpAddress())
+                .ipSource(userDetailDTO.getIpSource())
+                .lastLoginTime(userDetailDTO.getLastLoginTime())
+                .build();
+        userAuthMapper.updateById(userAuth);
     }
 
     @Override
@@ -131,6 +205,7 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper, UserAuth>
                 .eq(UserAuth::getUsername, user.getUsername()));
         return Objects.nonNull(userAuth);
     }
+
 }
 
 
