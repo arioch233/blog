@@ -72,7 +72,7 @@ public class UserAuth implements Serializable {
     /**
      * 上次登录时间
      */
-    private Date lastLoginTime;
+    private LocalDateTime lastLoginTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
