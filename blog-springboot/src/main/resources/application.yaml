@@ -26,4 +26,4 @@ jwt:
   #  密钥
   secret: woshiniba.zh.woshinidie
   #  有效期（秒）
-  expire: 60*30
+  expire: 1800
