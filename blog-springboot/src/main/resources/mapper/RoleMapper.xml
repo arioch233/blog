@@ -31,6 +31,16 @@
             </constructor>
         </collection>
     </resultMap>
+    <resultMap id="RolePermissionMap" type="com.zl.blog.pojo.dto.ResourceRoleDTO">
+        <id column="id" property="id"/>
+        <result column="url" property="url"/>
+        <result column="request_method" property="requestMethod"/>
+        <collection property="roleList" ofType="java.lang.String">
+            <constructor>
+                <arg column="role_label"/>
+            </constructor>
+        </collection>
+    </resultMap>
 
     <sql id="Base_Column_List">
         id,role_name,role_label,
@@ -68,4 +78,42 @@
         LEFT JOIN sys_role_menu rm ON rm.role_id = r.id
         ORDER BY r.id
     </select>
+    <select id="listResourceRoles" resultMap="RolePermissionMap">
+        SELECT
+        re.id,
+        url,
+        request_method,
+        role_label
+        FROM
+        sys_resource re
+        LEFT JOIN sys_role_resource rep on re.id = rep.resource_id
+        LEFT JOIN sys_role r on rep.role_id = r.id
+        WHERE
+        parent_id is NOT NULL
+        AND is_anonymous = 0
+    </select>
+    <select id="listRolesByUserInfoId" resultType="java.lang.String">
+        SELECT
+        role_label
+        FROM
+        sys_role r,
+        sys_user_role ur
+        WHERE
+        r.id = ur.role_id
+        AND ur.user_id = #{userInfoId}
+    </select>
+    <select id="listResourcesRoleByUserInfoId" resultType="java.lang.String">
+        SELECT
+        r.url
+        FROM
+        sys_resource r
+        LEFT JOIN sys_role_resource rr ON r.id = rr.resource_id
+        LEFT JOIN sys_user_role ur ON rr.role_id = ur.role_id
+        WHERE
+        r.is_anonymous = 0
+        AND ur.user_id = #{userInfoId}
+        HAVING
+        r.url IS NOT NULL
+    </select>
+
 </mapper>

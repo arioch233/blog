@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 
-
 /**
  * 接口状态码枚举
  *
@@ -27,6 +26,10 @@ public enum StatusCodeEnum {
      * 没有操作权限
      */
     AUTHORIZED(430, "没有操作权限"),
+    /**
+     * token 失效
+     */
+    TOKEN_EXIST(450, "token 失效请重新登录"),
     /**
      * 系统异常
      */

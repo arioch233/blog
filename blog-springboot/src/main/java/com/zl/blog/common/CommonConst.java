@@ -69,4 +69,9 @@ public class CommonConst {
      */
     public static final String UNKNOWN = "未知";
 
+    /**
+     * 默认昵称
+     */
+    public static final String DEFAULT_NICKNAME = "用户";
+
 }

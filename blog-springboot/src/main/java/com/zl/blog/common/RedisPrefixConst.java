@@ -7,6 +7,10 @@ package com.zl.blog.common;
  * @create 2022/10/27 16:23
  */
 public class RedisPrefixConst {
+    /**
+     * 网站名
+     */
+    public static final String WEBSITE_NAME = "blog";
 
     /**
      * 验证码过期时间
@@ -77,4 +81,23 @@ public class RedisPrefixConst {
      * 访客
      */
     public static final String UNIQUE_VISITOR = "blog_unique_visitor";
+
+    /**
+     * 用户token
+     */
+    public static final String USER_TOKEN = "blog_user_token";
+
+
+    /**
+     * redis key 前缀 shiro:cache
+     */
+    public static final String PREFIX_SHIRO_CACHE = "shiro:cache";
+    /**
+     * redis key 前缀 shiro:access_token
+     */
+    public static final String PREFIX_SHIRO_ACCESS_TOKEN = "shiro:access_token";
+    /**
+     * redis key 前缀 shiro:refresh_token
+     */
+    public static final String PREFIX_SHIRO_REFRESH_TOKEN = "shiro:refresh_token";
 }
