@@ -87,17 +87,23 @@ public class RedisPrefixConst {
      */
     public static final String USER_TOKEN = "blog_user_token";
 
+    /**
+     * 用户信息
+     */
+    public static final String USER_INFO = "blog_user_info";
 
     /**
-     * redis key 前缀 shiro:cache
+     * 用户角色
      */
-    public static final String PREFIX_SHIRO_CACHE = "shiro:cache";
+    public static final String USER_ROLE = "ROLE:userId=";
     /**
-     * redis key 前缀 shiro:access_token
+     * 用户角色权限
      */
-    public static final String PREFIX_SHIRO_ACCESS_TOKEN = "shiro:access_token";
+    public static final String USER_PERMISSION = "PERMISSION:userId=";
     /**
-     * redis key 前缀 shiro:refresh_token
+     * 用户菜单
      */
-    public static final String PREFIX_SHIRO_REFRESH_TOKEN = "shiro:refresh_token";
+    public static final String USER_MENU = "MENU:userId=";
+
+
 }

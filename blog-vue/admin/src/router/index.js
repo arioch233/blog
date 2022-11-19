@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
+// NProgress
+import NProgress from "nprogress";
 Vue.use(VueRouter);
 
 const routes = [
@@ -29,9 +30,12 @@ export const resetRouter = () => {
 };
 
 router.beforeEach((to, form, next) => {
+  NProgress.start();
   next();
 });
 
-router.afterEach(() => {});
+router.afterEach(() => {
+  NProgress.done();
+});
 
 export default router;

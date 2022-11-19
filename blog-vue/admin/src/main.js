@@ -12,8 +12,22 @@ import VueParticles from "vue-particles";
 import request from "@/utils/request";
 // dayjs
 import dayjs from "dayjs";
+// mavonEditor
+import mavonEditor from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+// NProgress
+import NProgress from "nprogress";
 // iconfont
 import "../src/assets/css/iconfont/iconfont.css";
+// ECharts
+import ECharts from "vue-echarts";
+import "echarts/lib/chart/line";
+import "echarts/lib/chart/pie";
+import "echarts/lib/chart/bar";
+import "echarts/lib/chart/map";
+import "echarts/lib/component/tooltip";
+import "echarts/lib/component/legend";
+import "echarts/lib/component/title";
 // 自定义js
 import config from "@/assets/js/config";
 // 自定义css
@@ -22,11 +36,20 @@ import "../src/assets/css/index.css";
 
 Vue.use(ElementUI); // ElementUI
 Vue.use(VueParticles); // VueParticles
+Vue.use(mavonEditor); // mavonEditor
+Vue.component("v-chart", ECharts); // ECharts
 Vue.config.productionTip = false;
 Vue.prototype.config = config; // config
 Vue.prototype.request = request; // Axios request
 Vue.prototype.$moment = dayjs; // dayjs
 
+NProgress.configure({
+  easing: "ease", // 动画方式
+  speed: 500, // 递增进度条的速度
+  showSpinner: false, // 是否显示加载ico
+  trickleSpeed: 200, // 自动递增间隔
+  minimum: 0.3, // 初始化时的最小百分比
+});
 // 时间格式
 Vue.filter("date", function (value, formatStr = "YYYY-MM-DD") {
   return dayjs(value).format(formatStr);

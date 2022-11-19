@@ -3,9 +3,11 @@ package com.zl.blog.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.config.shiro.token.JwtProvider;
 import com.zl.blog.entity.Menu;
 import com.zl.blog.entity.RoleMenu;
 import com.zl.blog.exception.ServiceException;
@@ -17,8 +19,10 @@ import com.zl.blog.pojo.dto.UserMenuDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.MenuVO;
 import com.zl.blog.service.MenuService;
+import com.zl.blog.service.RedisService;
 import com.zl.blog.utils.BeanCopyUtils;
 import com.zl.blog.utils.ShiroUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +32,8 @@ import java.util.stream.Collectors;
 
 import static com.zl.blog.common.CommonConst.COMPONENT;
 import static com.zl.blog.common.CommonConst.TRUE;
+import static com.zl.blog.common.RedisPrefixConst.USER_INFO;
+import static com.zl.blog.common.RedisPrefixConst.USER_MENU;
 
 /**
  * 菜单服务实现
@@ -45,6 +51,9 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
 
     @Resource
     private RoleMenuMapper roleMenuMapper;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public List<MenuDTO> listMenus(ConditionVO conditionVO) {
@@ -166,14 +175,20 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
 
     @Override
     public List<UserMenuDTO> listUserMenus() {
-        // 查询用户菜单信息
-        List<Menu> menuList = menuMapper.listMenusByUserInfoId(ShiroUtils.getUserId(Integer.class));
-        // 获取目录列表
-        List<Menu> catalogList = listCatalog(menuList);
-        // 获取目录下的子菜单
-        Map<Integer, List<Menu>> childrenMap = getMenuMap(menuList);
-        // 转换前端菜单格式
-        return convertUserMenuList(catalogList, childrenMap);
+        Integer userId = ShiroUtils.getUserId(Integer.class);
+        List<UserMenuDTO> userMenuDTOS = JSON.parseArray((String) redisService.hGet(USER_INFO, USER_MENU + userId), UserMenuDTO.class);
+        if (Objects.isNull(userMenuDTOS)) {
+            // 查询用户菜单信息
+            List<Menu> menuList = menuMapper.listMenusByUserInfoId(ShiroUtils.getUserId(Integer.class));
+            // 获取目录列表
+            List<Menu> catalogList = listCatalog(menuList);
+            // 获取目录下的子菜单
+            Map<Integer, List<Menu>> childrenMap = getMenuMap(menuList);
+            // 转换前端菜单格式
+            userMenuDTOS = convertUserMenuList(catalogList, childrenMap);
+            redisService.hSet(USER_INFO, USER_MENU + userId, JSON.toJSONString(userMenuDTOS));
+        }
+        return userMenuDTOS;
     }
 
     /**

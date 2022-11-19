@@ -16,6 +16,7 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import static com.zl.blog.common.enums.StatusCodeEnum.AUTHORIZED;
 
@@ -32,6 +33,9 @@ public class UrlFilter extends PathMatchingFilter {
 
     @Override
     protected boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
+        Pattern VARIABLE_PATTERN = Pattern.compile("\\{[^/]+?\\}");
+        Pattern DEFAULT_VARIABLE_PATTERN = Pattern.compile("[0-9]+");
+
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         String uri = httpServletRequest.getRequestURI();
         Integer userId = ShiroUtils.getUserId(Integer.class);
@@ -39,8 +43,10 @@ public class UrlFilter extends PathMatchingFilter {
             roleService = ApplicationContextHolder.getContext().getBean(RoleService.class);
         }
         List<String> roles = roleService.listRolesByUserInfoId(userId);
-        List<String> permissions = roleService.listResourcesRoleByUserInfoId(userId);
-        if (permissions.contains(uri)) {
+        List<String> permissions = roleService.listResourcesRoleByUserInfoId(1).stream().map(
+                str -> VARIABLE_PATTERN.matcher(str).replaceAll("#")
+        ).toList();
+        if (permissions.contains(DEFAULT_VARIABLE_PATTERN.matcher(uri).replaceAll("#"))) {
             log.info("当前用户角色: " + roles + " 访问URI: [" + uri + "] ");
             return true;
         }

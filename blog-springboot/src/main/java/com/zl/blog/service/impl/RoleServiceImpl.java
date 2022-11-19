@@ -1,6 +1,7 @@
 package com.zl.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -17,6 +18,7 @@ import com.zl.blog.pojo.dto.RoleDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.RoleDisableVO;
 import com.zl.blog.pojo.vo.RoleVO;
+import com.zl.blog.service.RedisService;
 import com.zl.blog.service.RoleMenuService;
 import com.zl.blog.service.RoleResourceService;
 import com.zl.blog.service.RoleService;
@@ -29,6 +31,8 @@ import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import static com.zl.blog.common.RedisPrefixConst.*;
 
 /**
  * 角色服务实现
@@ -50,6 +54,9 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
     private RoleResourceService roleResourceService;
     @Autowired
     private RoleMenuService roleMenuService;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public PageResult<RoleDTO> listRoles(ConditionVO conditionVO) {
@@ -106,6 +113,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
             roleMenuService.saveBatch(roleMenuList);
         }
         this.saveOrUpdate(role);
+        redisService.del(USER_INFO);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -130,12 +138,22 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
 
     @Override
     public List<String> listRolesByUserInfoId(Integer userId) {
-        return roleMapper.listRolesByUserInfoId(userId);
+        List<String> roles = JSON.parseArray((String) redisService.hGet(USER_INFO, USER_ROLE + userId), String.class);
+        if (Objects.isNull(roles)) {
+            roles = roleMapper.listRolesByUserInfoId(userId);
+            redisService.hSet(USER_INFO, USER_ROLE + userId, JSON.toJSONString(roles));
+        }
+        return roles;
     }
 
     @Override
     public List<String> listResourcesRoleByUserInfoId(Integer userId) {
-        return roleMapper.listResourcesRoleByUserInfoId(userId);
+        List<String> permissions = JSON.parseArray((String) redisService.hGet(USER_INFO, USER_PERMISSION + userId), String.class);
+        if (Objects.isNull(permissions)) {
+            permissions = roleMapper.listResourcesRoleByUserInfoId(userId);
+            redisService.hSet(USER_INFO, USER_PERMISSION + userId, JSON.toJSONString(permissions));
+        }
+        return permissions;
     }
 }
 

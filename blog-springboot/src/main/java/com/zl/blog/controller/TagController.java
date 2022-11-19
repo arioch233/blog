@@ -32,7 +32,7 @@ public class TagController {
      */
     @ApiOperation(value = "查询标签列表")
     @GetMapping("/all")
-    public Result listTags(ConditionVO conditionVO) {
+    public Result listTagsBack(ConditionVO conditionVO) {
         return Result.success(tagService.listTagsBack(conditionVO));
     }
 
