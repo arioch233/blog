@@ -1,0 +1,71 @@
+import Vue from "vue";
+import Vuex from "vuex";
+
+Vue.use(Vuex);
+
+export default new Vuex.Store({
+  state: {
+    collapse: false,
+    tabList: [{ name: "首页", path: "/admin" }],
+    userId: null,
+    token: null,
+    roleList: null,
+    avatar: null,
+    nickname: null,
+    intro: null,
+    webSite: null,
+    userMenuList: [],
+  },
+  mutations: {
+    saveTab(state, tab) {
+      if (state.tabList.findIndex((item) => item.path === tab.path) === -1) {
+        state.tabList.push({ name: tab.name, path: tab.path });
+      }
+    },
+    removeTab(state, tab) {
+      let index = state.tabList.findIndex((item) => item.name === tab.name);
+      state.tabList.splice(index, 1);
+    },
+    resetTab(state) {
+      state.tabList = [{ name: "首页", path: "/admin" }];
+    },
+    trigger(state) {
+      state.collapse = !state.collapse;
+    },
+    login(state, user) {
+      state.userId = user.userInfoId;
+      state.token = user.token;
+      state.roleList = user.roleList;
+      state.avatar = user.avatar;
+      state.nickname = user.nickname;
+      state.intro = user.intro;
+      state.webSite = user.webSite;
+      sessionStorage.setItem("user", JSON.stringify(user));
+    },
+    saveUserMenuList(state, userMenuList) {
+      state.userMenuList = userMenuList;
+    },
+    logout(state) {
+      state.userId = null;
+      state.roleList = null;
+      state.avatar = null;
+      state.nickname = null;
+      state.intro = null;
+      state.token = null;
+      state.webSite = null;
+      state.userMenuList = [];
+      sessionStorage.removeItem("user");
+    },
+    updateAvatar(state, avatar) {
+      state.avatar = avatar;
+    },
+    updateUserInfo(state, user) {
+      state.nickname = user.nickname;
+      state.intro = user.intro;
+      state.webSite = user.webSite;
+    },
+  },
+  actions: {},
+  modules: {},
+  plugins: [],
+});
