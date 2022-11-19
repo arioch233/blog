@@ -18,6 +18,7 @@ import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.MenuVO;
 import com.zl.blog.service.MenuService;
 import com.zl.blog.utils.BeanCopyUtils;
+import com.zl.blog.utils.ShiroUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -166,7 +167,7 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu>
     @Override
     public List<UserMenuDTO> listUserMenus() {
         // 查询用户菜单信息
-        List<Menu> menuList = menuMapper.listMenusByUserInfoId(1);
+        List<Menu> menuList = menuMapper.listMenusByUserInfoId(ShiroUtils.getUserId(Integer.class));
         // 获取目录列表
         List<Menu> catalogList = listCatalog(menuList);
         // 获取目录下的子菜单

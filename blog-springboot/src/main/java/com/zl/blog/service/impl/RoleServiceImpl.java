@@ -126,6 +126,17 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
         // 删除角色
         this.removeBatchByIds(roleIds);
     }
+
+
+    @Override
+    public List<String> listRolesByUserInfoId(Integer userId) {
+        return roleMapper.listRolesByUserInfoId(userId);
+    }
+
+    @Override
+    public List<String> listResourcesRoleByUserInfoId(Integer userId) {
+        return roleMapper.listResourcesRoleByUserInfoId(userId);
+    }
 }
 
 

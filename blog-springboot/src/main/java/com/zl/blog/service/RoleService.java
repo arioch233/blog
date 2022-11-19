@@ -47,4 +47,20 @@ public interface RoleService extends IService<Role> {
      * @param roleIds 角色id列表
      */
     void deleteRole(List<Integer> roleIds);
+
+    /**
+     * 根据用户id 获取角色
+     *
+     * @param userId
+     * @return
+     */
+    List<String> listRolesByUserInfoId(Integer userId);
+
+    /**
+     * 根据用户id 获取权限
+     *
+     * @param userId
+     * @return
+     */
+    List<String> listResourcesRoleByUserInfoId(Integer userId);
 }
