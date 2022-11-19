@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.blog.mapper.ArticleMapper">
+
+    <resultMap id="BaseResultMap" type="com.zl.blog.entity.Article">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="categoryId" column="category_id" jdbcType="INTEGER"/>
+        <result property="articleCover" column="article_cover" jdbcType="VARCHAR"/>
+        <result property="articleTitle" column="article_title" jdbcType="VARCHAR"/>
+        <result property="articleContent" column="article_content" jdbcType="VARCHAR"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="originalUrl" column="original_url" jdbcType="VARCHAR"/>
+        <result property="isTop" column="is_top" jdbcType="TINYINT"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <result property="status" column="status" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+    <resultMap id="articleBackResultMap" type="com.zl.blog.pojo.dto.ArticleBackDTO">
+        <id property="id" column="id"/>
+        <result property="articleCover" column="article_cover"/>
+        <result property="articleTitle" column="article_title"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="type" column="type"/>
+        <result property="isTop" column="is_top"/>
+        <result property="isDelete" column="is_delete"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagDTO">
+            <id property="id" column="tag_id"/>
+            <result property="tagName" column="tag_name"/>
+        </collection>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,category_id,article_cover,
+        article_title,article_content,type,
+        original_url,is_top,is_delete,
+        status,create_time,update_time
+    </sql>
+    <select id="listArticlesBack" resultMap="articleBackResultMap">
+        SELECT
+        a.id,
+        article_cover,
+        article_title,
+        type,
+        is_top,
+        a.is_delete,
+        a.status,
+        a.create_time,
+        category_name,
+        t.id AS tag_id,
+        t.tag_name
+        FROM
+        (
+        SELECT
+        id,
+        article_cover,
+        article_title,
+        type,
+        is_top,
+        is_delete,
+        status,
+        create_time,
+        category_id
+        FROM
+        tb_article
+        <where>
+            is_delete = #{condition.isDelete}
+            <if test="condition.keywords != null">
+                and article_title like concat('%',#{condition.keywords},'%')
+            </if>
+            <if test="condition.status != null">
+                and status = #{condition.status}
+            </if>
+            <if test="condition.categoryId != null">
+                and category_id = #{condition.categoryId}
+            </if>
+            <if test="condition.type != null">
+                and type = #{condition.type}
+            </if>
+            <if test="condition.tagId != null">
+                and id in
+                (
+                SELECT
+                article_id
+                FROM
+                tb_article_tag
+                WHERE
+                tag_id = #{condition.tagId}
+                )
+            </if>
+        </where>
+        ORDER BY
+        is_top DESC,
+        id DESC
+        ) a
+        LEFT JOIN tb_category c ON a.category_id = c.id
+        LEFT JOIN tb_article_tag atg ON a.id = atg.article_id
+        LEFT JOIN tb_tag t ON t.id = atg.tag_id
+        ORDER BY
+        is_top DESC,
+        a.id DESC
+    </select>
+</mapper>
