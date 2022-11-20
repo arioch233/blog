@@ -1,23 +1,23 @@
 <template>
-  <div>
-    <vue-particles
-      color="#dedede"
-      :particleOpacity="0.7"
-      :particlesNumber="100"
-      shapeType="circle"
-      :particleSize="4"
-      linesColor="#dedede"
-      :linesWidth="1"
-      :lineLinked="true"
-      :lineOpacity="0.4"
-      :linesDistance="150"
-      :moveSpeed="3"
-      :hoverEffect="true"
-      hoverMode="grab"
-      :clickEffect="true"
-      clickMode="push"
-    >
-    </vue-particles>
+  <div class="background-image">
+    <!--    <vue-particles-->
+    <!--      color="#dedede"-->
+    <!--      :particleOpacity="0.7"-->
+    <!--      :particlesNumber="100"-->
+    <!--      shapeType="circle"-->
+    <!--      :particleSize="4"-->
+    <!--      linesColor="#dedede"-->
+    <!--      :linesWidth="1"-->
+    <!--      :lineLinked="true"-->
+    <!--      :lineOpacity="0.4"-->
+    <!--      :linesDistance="150"-->
+    <!--      :moveSpeed="3"-->
+    <!--      :hoverEffect="true"-->
+    <!--      hoverMode="grab"-->
+    <!--      :clickEffect="true"-->
+    <!--      clickMode="push"-->
+    <!--    >-->
+    <!--    </vue-particles>-->
     <el-card class="login-wrapper">
       <el-form
         :rules="rules"
@@ -114,17 +114,24 @@ export default {
 </script>
 
 <style scoped>
-#particles-js {
-  background-image: url("../../assets/images/202205240905434.jpg");
-  background-attachment: fixed;
-  background-repeat: no-repeat;
-  background-size: 100% calc(100% + 4px);
+/*#particles-js {*/
+/*  background-image: url("../../assets/images/bg2.png");*/
+/*  background-attachment: fixed;*/
+/*  background-repeat: no-repeat;*/
+/*  background-size: 100% calc(100% + 4px);*/
+/*  width: 100%;*/
+/*  !*height: calc(100% - 4px);*!*/
+/*  position: absolute;*/
+/*}*/
+
+.background-image {
+  background-image: url("../../assets/images/bg-login.png");
   width: 100%;
-  height: calc(100% - 4px);
-  position: absolute;
+  height: 100vh;
 }
 
 .login-wrapper {
+  opacity: 0.9;
   text-align: center;
   background-color: #fff;
   border-radius: 20px;
