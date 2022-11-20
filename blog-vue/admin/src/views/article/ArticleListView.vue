@@ -176,7 +176,7 @@
             :src="
               scope.row.articleCover
                 ? scope.row.articleCover
-                : 'http://localhost:9090/admin/file/image/download/08391538a4104439a141e5225c533595-2022-10-05-15-08-00.png'
+                : 'https://tva3.sinaimg.cn/large/0072Vf1pgy1foxkittkoij31kw0w0nlj.jpg'
             "
           />
           <i

@@ -94,4 +94,15 @@ public class ConditionVO {
      */
     @ApiModelProperty(name = "isReview", value = "是否审核", dataType = "Integer")
     private Integer isReview;
+
+    /**
+     * 文件类型
+     */
+    @ApiModelProperty(name = "fileType", value = "文件类型", dataType = "String")
+    private String fileType;
+    /**
+     * 文件扩展名
+     */
+    @ApiModelProperty(name = "fileSuffix", value = "文件扩展名", dataType = "String")
+    private String fileSuffix;
 }

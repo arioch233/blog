@@ -59,9 +59,15 @@ public class IFileServiceImpl extends ServiceImpl<IFileMapper, IFile>
     @Override
     public Page<FileBackDTO> getFileList(ConditionVO conditionVO) {
         QueryWrapper<IFile> queryWrapper = new QueryWrapper<>();
-        queryWrapper.orderByAsc("id");
+        queryWrapper.orderByDesc("create_time");
         if (conditionVO.getKeywords() != null) {
             queryWrapper.like("filename", conditionVO.getKeywords());
+        }
+        if (conditionVO.getFileType() != null) {
+            queryWrapper.like("path", conditionVO.getFileType());
+        }
+        if (conditionVO.getFileSuffix() != null){
+            queryWrapper.like("type", conditionVO.getFileSuffix());
         }
         Page<IFile> page = page(new Page<>(conditionVO.getCurrent(), conditionVO.getSize()), queryWrapper);
         Page<FileBackDTO> pageDTO = new Page<>();
