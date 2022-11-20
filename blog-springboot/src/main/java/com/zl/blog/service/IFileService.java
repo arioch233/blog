@@ -18,9 +18,51 @@ import java.util.List;
  * @createDate 2022-11-13 00:36:49
  */
 public interface IFileService extends IService<IFile> {
+    /**
+     * 获取文件列表
+     *
+     * @param conditionVO
+     * @return
+     */
     Page<FileBackDTO> getFileList(ConditionVO conditionVO);
 
+    /**
+     * 上传图片
+     *
+     * @param file
+     * @return
+     * @throws IOException
+     */
     String saveImageFile(MultipartFile file) throws IOException;
 
+    /**
+     * 根据id删除图片
+     *
+     * @param imageIds
+     */
     void deleteFile(List<Integer> imageIds);
+
+    /**
+     * 上传头像
+     *
+     * @param file
+     * @return
+     */
+    String uploadAvatarFile(MultipartFile file) throws IOException;
+
+    /**
+     * 上传文章图片
+     *
+     * @param file
+     * @return
+     */
+    String uploadArticleImageFile(MultipartFile file) throws IOException;
+
+    /**
+     * 上传配置图片
+     *
+     * @param file
+     * @return
+     */
+    String uploadConfigImageFile(MultipartFile file) throws IOException;
 }

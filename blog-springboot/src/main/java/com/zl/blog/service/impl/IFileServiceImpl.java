@@ -3,6 +3,7 @@ package com.zl.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.common.enums.FilePathEnum;
 import com.zl.blog.entity.IFile;
 import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.IFileMapper;
@@ -27,7 +28,7 @@ import java.util.Objects;
 
 import static com.zl.blog.common.CommonConst.IMAGE_TYPE_LIST;
 import static com.zl.blog.common.CommonConst.TRUE;
-import static com.zl.blog.common.enums.FilePathEnum.IMAGES;
+import static com.zl.blog.common.enums.FilePathEnum.*;
 
 /**
  * 文件服务实现
@@ -71,6 +72,36 @@ public class IFileServiceImpl extends ServiceImpl<IFileMapper, IFile>
     @Transactional(rollbackFor = Exception.class)
     @Override
     public String saveImageFile(MultipartFile file) throws IOException {
+        return getUrl(IMAGES, file);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String uploadAvatarFile(MultipartFile file) throws IOException {
+        return getUrl(AVATAR, file);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String uploadArticleImageFile(MultipartFile file) throws IOException {
+        return getUrl(ARTICLE, file);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public String uploadConfigImageFile(MultipartFile file) throws IOException {
+        return getUrl(CONFIG, file);
+    }
+
+    /**
+     * 保存图片并返回url
+     *
+     * @param filePath
+     * @param file
+     * @return
+     * @throws IOException
+     */
+    private String getUrl(FilePathEnum filePath, MultipartFile file) throws IOException {
         // 获取文件md5值
         String md5 = FileUtils.getMd5(file.getInputStream());
         // 获取文件扩展名
@@ -86,20 +117,20 @@ public class IFileServiceImpl extends ServiceImpl<IFileMapper, IFile>
         // 图片URL
         String url = "";
         // 判断文件是否已存在
-        if (!localUploadStrategy.exists(IMAGES.getPath() + fileName)) {
+        if (!localUploadStrategy.exists(filePath.getPath() + fileName)) {
             // 不存在则继续上传
-            url = uploadStrategyContext.executeUploadStrategy(fileName, file.getInputStream(), IMAGES.getPath());
+            url = uploadStrategyContext.executeUploadStrategy(fileName, file.getInputStream(), filePath.getPath());
             fileMapper.insert(IFile.builder()
                     .filename(fileName)
                     .type(extName.replace(".", ""))
                     .size(fileSize)
                     .md5(md5)
-                    .path(IMAGES.getPath())
+                    .path(filePath.toString())
                     .enable(TRUE)
                     .url(url)
                     .build());
         } else {
-            url = localUploadStrategy.getFileAccessUrl(IMAGES.getPath() + fileName);
+            url = localUploadStrategy.getFileAccessUrl(filePath.getPath() + fileName);
             fileMapper.insert(IFile.builder()
                     .filename(fileName)
                     .type(extName.replace(".", ""))
@@ -112,6 +143,7 @@ public class IFileServiceImpl extends ServiceImpl<IFileMapper, IFile>
         return url;
     }
 
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void deleteFile(List<Integer> imageIds) {
@@ -119,7 +151,7 @@ public class IFileServiceImpl extends ServiceImpl<IFileMapper, IFile>
         for (IFile file : list) {
             if (Objects.nonNull(file.getPath())) {
                 FileUtils.deleteFile(file.getFilename(),
-                        localPath + file.getPath());
+                        localPath + FilePathEnum.valueOf(file.getPath()).getPath());
             }
         }
         this.removeBatchByIds(imageIds);

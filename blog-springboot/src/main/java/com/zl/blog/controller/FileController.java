@@ -59,8 +59,47 @@ public class FileController {
     @ApiOperation(value = "上传图片")
     @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
     @PostMapping("/image/upload")
-    public Result uploadFile(@RequestParam MultipartFile file) throws IOException {
+    public Result uploadImageFile(@RequestParam MultipartFile file) throws IOException {
         return Result.success(fileService.saveImageFile(file), null);
+    }
+
+    /**
+     * 上传头像
+     *
+     * @param file
+     * @return Result String 返回图片地址
+     */
+    @ApiOperation(value = "上传头像")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
+    @PostMapping("/avatar/upload")
+    public Result uploadAvatarFile(@RequestParam MultipartFile file) throws IOException {
+        return Result.success(fileService.uploadAvatarFile(file), null);
+    }
+
+    /**
+     * 上传文章封面
+     *
+     * @param file
+     * @return Result String 返回图片地址
+     */
+    @ApiOperation(value = "上传文章封面")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
+    @PostMapping("/article/upload")
+    public Result uploadArticleImageFile(@RequestParam MultipartFile file) throws IOException {
+        return Result.success(fileService.uploadArticleImageFile(file), null);
+    }
+
+    /**
+     * 上传配置图片
+     *
+     * @param file
+     * @return Result String 返回图片地址
+     */
+    @ApiOperation(value = "上传配置图片")
+    @ApiImplicitParam(name = "file", value = "文件", required = true, dataType = "MultipartFile")
+    @PostMapping("/config/upload")
+    public Result uploadConfigImageFile(@RequestParam MultipartFile file) throws IOException {
+        return Result.success(fileService.uploadConfigImageFile(file),null);
     }
 
     /**
