@@ -1,10 +1,25 @@
 package com.zl.blog.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.entity.UserAuth;
 import com.zl.blog.entity.UserInfo;
+import com.zl.blog.exception.ServiceException;
+import com.zl.blog.mapper.UserAuthMapper;
 import com.zl.blog.mapper.UserInfoMapper;
+import com.zl.blog.pojo.vo.PasswordVO;
+import com.zl.blog.pojo.vo.UserInfoVO;
+import com.zl.blog.service.RedisService;
 import com.zl.blog.service.UserInfoService;
+import com.zl.blog.utils.ShiroUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Resource;
+import java.util.Objects;
+
+import static com.zl.blog.common.RedisPrefixConst.WEBSITE_NAME;
 
 /**
  * 用户信息服务实现
@@ -17,6 +32,47 @@ import org.springframework.stereotype.Service;
 public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
         implements UserInfoService {
 
+    @Resource
+    private UserInfoMapper userInfoMapper;
+
+    @Resource
+    private UserAuthMapper userAuthMapper;
+
+    @Autowired
+    private RedisService redisService;
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateUserInfo(UserInfoVO userInfoVO) {
+        // 封装用户信息
+        UserInfo userInfo = UserInfo.builder()
+                .id(ShiroUtils.getUserId(Integer.class))
+                .nickname(userInfoVO.getNickname())
+                .avatar(userInfoVO.getAvatar())
+                .intro(userInfoVO.getIntro())
+                .webSite(userInfoVO.getWebSite())
+                .build();
+        userInfoMapper.updateById(userInfo);
+        // 刷新缓存
+        redisService.hDel(WEBSITE_NAME);
+    }
+
+    @Override
+    public void updateUserPassword(PasswordVO passwordVO) {
+        // 查询旧密码是否正确
+        UserAuth user = userAuthMapper.selectOne(new LambdaQueryWrapper<UserAuth>()
+                .eq(UserAuth::getId, ShiroUtils.getUserId(Integer.class)));
+        // 正确则修改密码，错误则提示不正确
+        if (Objects.nonNull(user) && ShiroUtils.verifyPassword(passwordVO.getOldPassword(), user.getPassword())) {
+            UserAuth userAuth = UserAuth.builder()
+                    .id(ShiroUtils.getUserId(Integer.class))
+                    .password(ShiroUtils.md5(passwordVO.getNewPassword()))
+                    .build();
+            userAuthMapper.updateById(userAuth);
+        } else {
+            throw new ServiceException("旧密码不正确");
+        }
+    }
 }
 
 
