@@ -95,6 +95,12 @@ public class WebsiteConfigVO {
     private String gitee;
 
     /**
+     * gitea
+     */
+    @ApiModelProperty(name = "gitea", value = "gitea", required = true, dataType = "String")
+    private String gitea;
+
+    /**
      * 游客头像
      */
     @ApiModelProperty(name = "touristAvatar", value = "游客头像", required = true, dataType = "String")
