@@ -3,7 +3,9 @@ package com.zl.blog.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zl.blog.entity.UserInfo;
 import com.zl.blog.pojo.vo.PasswordVO;
+import com.zl.blog.pojo.vo.UserDisableVO;
 import com.zl.blog.pojo.vo.UserInfoVO;
+import com.zl.blog.pojo.vo.UserRoleVO;
 
 /**
  * 用户信息服务
@@ -27,4 +29,18 @@ public interface UserInfoService extends IService<UserInfo> {
      * @param passwordVO
      */
     void updateUserPassword(PasswordVO passwordVO);
+
+    /**
+     * 更改用户禁用状态
+     *
+     * @param userDisableVO
+     */
+    void updateUserDisable(UserDisableVO userDisableVO);
+
+    /**
+     * 更新用户角色
+     *
+     * @param userRoleVO
+     */
+    void updateUserRole(UserRoleVO userRoleVO);
 }

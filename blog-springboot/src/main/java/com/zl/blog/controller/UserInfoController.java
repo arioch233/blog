@@ -1,8 +1,8 @@
 package com.zl.blog.controller;
 
 import com.zl.blog.common.Result;
-import com.zl.blog.pojo.vo.PasswordVO;
-import com.zl.blog.pojo.vo.UserInfoVO;
+import com.zl.blog.pojo.vo.*;
+import com.zl.blog.service.UserAuthService;
 import com.zl.blog.service.UserInfoService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,6 +24,9 @@ public class UserInfoController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private UserAuthService userAuthService;
 
     /**
      * 更新用户信息
@@ -48,6 +51,44 @@ public class UserInfoController {
     @PutMapping("/password")
     public Result updateUserPassword(@Valid @RequestBody PasswordVO passwordVO) {
         userInfoService.updateUserPassword(passwordVO);
+        return Result.success();
+    }
+
+    /**
+     * 查询用户列表
+     *
+     * @param conditionVO
+     * @return
+     */
+    @ApiOperation(value = "查询用户列表")
+    @GetMapping("/all")
+    public Result listUsers(ConditionVO conditionVO) {
+        return Result.success(userAuthService.listUsers(conditionVO));
+    }
+
+    /**
+     * 修改用户禁用状态
+     *
+     * @param userDisableVO 用户禁用信息
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "修改用户禁用状态")
+    @PutMapping("/disable")
+    public Result updateUserDisable(@Valid @RequestBody UserDisableVO userDisableVO) {
+        userInfoService.updateUserDisable(userDisableVO);
+        return Result.success();
+    }
+
+    /**
+     * 修改用户角色
+     *
+     * @param userRoleVO 用户角色信息
+     * @return {@link Result}
+     */
+    @ApiOperation(value = "修改用户角色")
+    @PutMapping("/role")
+    public Result updateUserRole(@Valid @RequestBody UserRoleVO userRoleVO) {
+        userInfoService.updateUserRole(userRoleVO);
         return Result.success();
     }
 }

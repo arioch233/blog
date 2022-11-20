@@ -59,7 +59,7 @@ export default {
     return {
       loginForm: {
         username: "1738252674@qq.com",
-        password: "123456",
+        password: "232531",
         code: "",
       },
       rules: {

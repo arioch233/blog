@@ -79,4 +79,15 @@ public class RoleController {
         return Result.success();
     }
 
+    /**
+     * 获取角色选项列表
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取角色选项列表")
+    @GetMapping("/options")
+    public Result listRoleOptions() {
+        return Result.success(roleService.listRoleOptions());
+    }
+
 }

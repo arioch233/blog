@@ -5,7 +5,6 @@ import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.zl.blog.common.CommonConst;
 import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.Role;
 import com.zl.blog.entity.RoleMenu;
@@ -15,6 +14,7 @@ import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.RoleMapper;
 import com.zl.blog.mapper.UserRoleMapper;
 import com.zl.blog.pojo.dto.RoleDTO;
+import com.zl.blog.pojo.dto.UserRoleDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.RoleDisableVO;
 import com.zl.blog.pojo.vo.RoleVO;
@@ -22,6 +22,7 @@ import com.zl.blog.service.RedisService;
 import com.zl.blog.service.RoleMenuService;
 import com.zl.blog.service.RoleResourceService;
 import com.zl.blog.service.RoleService;
+import com.zl.blog.utils.BeanCopyUtils;
 import com.zl.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.zl.blog.common.CommonConst.FALSE;
 import static com.zl.blog.common.RedisPrefixConst.*;
 
 /**
@@ -81,7 +83,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
                 .id(roleVO.getId())
                 .roleName(roleVO.getRoleName())
                 .roleLabel(roleVO.getRoleLabel())
-                .isDisable(CommonConst.FALSE)
+                .isDisable(FALSE)
                 .build();
         this.saveOrUpdate(role);
         // 更新角色资源关系
@@ -154,6 +156,15 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role>
             redisService.hSet(USER_INFO, USER_PERMISSION + userId, JSON.toJSONString(permissions));
         }
         return permissions;
+    }
+
+    @Override
+    public List<UserRoleDTO> listRoleOptions() {
+        // 查询角色列表
+        List<Role> roleList = roleMapper.selectList(new LambdaQueryWrapper<Role>()
+                .select(Role::getId, Role::getRoleName)
+                .eq(Role::getIsDisable, FALSE));
+        return BeanCopyUtils.copyList(roleList, UserRoleDTO.class);
     }
 }
 

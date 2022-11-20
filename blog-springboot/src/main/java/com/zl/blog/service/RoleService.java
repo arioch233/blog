@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.Role;
 import com.zl.blog.pojo.dto.RoleDTO;
+import com.zl.blog.pojo.dto.UserRoleDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.RoleDisableVO;
 import com.zl.blog.pojo.vo.RoleVO;
@@ -63,4 +64,11 @@ public interface RoleService extends IService<Role> {
      * @return
      */
     List<String> listResourcesRoleByUserInfoId(Integer userId);
+
+    /**
+     * 获取角色选项列表
+     *
+     * @return
+     */
+    List<UserRoleDTO> listRoleOptions();
 }

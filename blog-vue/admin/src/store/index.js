@@ -57,12 +57,31 @@ export default new Vuex.Store({
       sessionStorage.removeItem("user");
     },
     updateAvatar(state, avatar) {
-      state.avatar = avatar;
+      let user = {
+        userId: state.userId,
+        token: state.token,
+        roleList: state.roleList,
+        avatar: avatar,
+        nickname: state.nickname,
+        intro: state.intro,
+        webSite: state.webSite,
+        userMenuList: state.userMenuList,
+      };
+      sessionStorage.setItem("user", JSON.stringify(user));
     },
     updateUserInfo(state, user) {
-      state.nickname = user.nickname;
-      state.intro = user.intro;
-      state.webSite = user.webSite;
+      let userInfo = {
+        userId: state.userId,
+        token: state.token,
+        roleList: state.roleList,
+        avatar: user.avatar,
+        nickname: user.nickname,
+        intro: user.intro,
+        webSite: user.webSite,
+        userMenuList: state.userMenuList,
+      };
+      state.avatar = user.avatar;
+      sessionStorage.setItem("user", JSON.stringify(userInfo));
     },
   },
   actions: {},

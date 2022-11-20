@@ -3,6 +3,7 @@ package com.zl.blog.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.common.enums.LoginTypeEnum;
 import com.zl.blog.common.enums.RoleEnum;
 import com.zl.blog.config.shiro.token.JwtProvider;
@@ -14,12 +15,15 @@ import com.zl.blog.mapper.RoleMapper;
 import com.zl.blog.mapper.UserAuthMapper;
 import com.zl.blog.mapper.UserInfoMapper;
 import com.zl.blog.mapper.UserRoleMapper;
+import com.zl.blog.pojo.dto.UserBackDTO;
 import com.zl.blog.pojo.dto.UserDetailDTO;
 import com.zl.blog.pojo.dto.UserInfoDTO;
+import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.UserVO;
 import com.zl.blog.service.*;
 import com.zl.blog.utils.BeanCopyUtils;
 import com.zl.blog.utils.IpUtils;
+import com.zl.blog.utils.PageUtils;
 import com.zl.blog.utils.ShiroUtils;
 import eu.bitwalker.useragentutils.UserAgent;
 import org.apache.shiro.SecurityUtils;
@@ -206,6 +210,12 @@ public class UserAuthServiceImpl extends ServiceImpl<UserAuthMapper, UserAuth>
         return Objects.nonNull(userAuth);
     }
 
+    @Override
+    public PageResult<UserBackDTO> listUsers(ConditionVO condition) {
+        Long count = userAuthMapper.userCount(condition);
+        List<UserBackDTO> userBackDTOList = userAuthMapper.listUsers(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
+        return new PageResult<>(userBackDTOList, count);
+    }
 }
 
 

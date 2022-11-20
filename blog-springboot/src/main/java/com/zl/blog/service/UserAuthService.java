@@ -1,8 +1,11 @@
 package com.zl.blog.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.UserAuth;
+import com.zl.blog.pojo.dto.UserBackDTO;
 import com.zl.blog.pojo.dto.UserInfoDTO;
+import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.UserVO;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,4 +45,12 @@ public interface UserAuthService extends IService<UserAuth> {
      * 登出
      */
     void logout();
+
+    /**
+     * 查询后台用户列表
+     *
+     * @param condition 条件
+     * @return 用户列表
+     */
+    PageResult<UserBackDTO> listUsers(ConditionVO condition);
 }
