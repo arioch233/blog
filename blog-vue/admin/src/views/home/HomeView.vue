@@ -280,7 +280,6 @@ export default {
   methods: {
     getData() {
       this.request.get("/admin").then((data) => {
-        console.log(data);
         this.viewsCount = data.data.viewsCount;
         this.messageCount = data.data.messageCount;
         this.likeCount = data.data.likeCount;
@@ -302,7 +301,6 @@ export default {
             this.category.legend.data.push(item.categoryName);
           });
         }
-
         if (data.data.articleRankDTOList != null) {
           data.data.articleRankDTOList.forEach((item) => {
             this.articleRank.series[0].data.push(item.viewsCount);

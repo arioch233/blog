@@ -210,13 +210,15 @@
         align="center"
       >
         <template slot-scope="scope">
-          <el-tag
-            v-for="item of scope.row.tagDTOList"
-            :key="item.tagId"
-            style="margin-right: 0.2rem; margin-top: 0.2rem"
-          >
-            {{ item.tagName }}
-          </el-tag>
+          <template v-for="item of scope.row.tagDTOList">
+            <el-tag
+              v-if="item.tagName != null"
+              :key="item.tagId"
+              style="margin-right: 0.2rem; margin-top: 0.2rem"
+            >
+              {{ item.tagName }}
+            </el-tag>
+          </template>
         </template>
       </el-table-column>
       <!-- 文章浏览量 -->
@@ -605,7 +607,6 @@ export default {
         })
         .then((data) => {
           this.articleList = data.data.records;
-          console.log(this.articleList);
           this.count = data.data.count;
           this.loading = false;
         });
