@@ -81,6 +81,7 @@ export default new Vuex.Store({
         userMenuList: state.userMenuList,
       };
       state.avatar = user.avatar;
+      state.nickname = user.nickname;
       sessionStorage.setItem("user", JSON.stringify(userInfo));
     },
   },

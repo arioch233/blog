@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import static com.zl.blog.common.RedisPrefixConst.WEBSITE_CONFIG;
 import static com.zl.blog.common.RedisPrefixConst.WEBSITE_NAME;
 
 /**
@@ -62,8 +63,6 @@ public class UserInfoServiceImpl extends ServiceImpl<UserInfoMapper, UserInfo>
                 .webSite(userInfoVO.getWebSite())
                 .build();
         userInfoMapper.updateById(userInfo);
-        // 刷新缓存
-        redisService.hDel(WEBSITE_NAME);
     }
 
     @Override

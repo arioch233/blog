@@ -37,10 +37,10 @@
         SELECT
         c.id,
         c.category_name,
-        COUNT( c.id ) AS category_count
+        COUNT( a.id ) AS article_count
         FROM
         tb_category c
-        LEFT JOIN ( SELECT id, category_id FROM tb_article WHERE is_delete = 0 AND 'status' = 1 ) a ON c.id = a.category_id
+        LEFT JOIN ( SELECT a.id, a.category_id FROM tb_article a WHERE is_delete = 0 AND a.STATUS = 1 ) a ON c.id = a.category_id
         GROUP BY
         c.id
     </select>

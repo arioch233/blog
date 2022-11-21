@@ -29,9 +29,9 @@ public class BlogBackInfoDTO {
     private Long messageCount;
 
     /**
-     * 用户量
+     * 点赞量
      */
-    private Long userCount;
+    private Long likeCount;
 
     /**
      * 文章量

@@ -13,6 +13,7 @@ export default {
       this.$store.commit("login", user);
       generateMenu();
     }
+    this.request.post("/report");
   },
 };
 </script>

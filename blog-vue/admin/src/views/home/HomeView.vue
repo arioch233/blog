@@ -26,7 +26,7 @@
           </div>
           <div class="card-desc">
             <div class="card-title">点赞量</div>
-            <div class="card-count">{{ userCount }}</div>
+            <div class="card-count">{{ likeCount }}</div>
           </div>
         </el-card>
       </el-col>
@@ -99,13 +99,17 @@
 <script>
 export default {
   name: "HomeView",
+  created() {
+    // this.listUserArea();
+    this.getData();
+  },
   data() {
     return {
       loading: true,
       type: 1,
       viewsCount: 0,
       messageCount: 0,
-      userCount: 0,
+      likeCount: 0,
       articleCount: 0,
       articleStatisticsList: [],
       tagDTOList: [],
@@ -205,20 +209,134 @@ export default {
           },
         ],
       },
+      userAreaMap: {
+        tooltip: {
+          formatter: function (e) {
+            let value = e.value ? e.value : 0;
+            return e.seriesName + "<br />" + e.name + "：" + value;
+          },
+        },
+        visualMap: {
+          min: 0,
+          max: 1000,
+          right: 26,
+          bottom: 40,
+          showLabel: !0,
+          pieces: [
+            {
+              gt: 100,
+              label: "100人以上",
+              color: "#ED5351",
+            },
+            {
+              gte: 51,
+              lte: 100,
+              label: "51-100人",
+              color: "#59D9A5",
+            },
+            {
+              gte: 21,
+              lte: 50,
+              label: "21-50人",
+              color: "#F6C021",
+            },
+            {
+              label: "1-20人",
+              gt: 0,
+              lte: 20,
+              color: "#6DCAEC",
+            },
+          ],
+          show: !0,
+        },
+        geo: {
+          map: "china",
+          zoom: 1.2,
+          layoutCenter: ["50%", "50%"], //地图中心在屏幕中的位置
+          itemStyle: {
+            normal: {
+              borderColor: "rgba(0, 0, 0, 0.2)",
+            },
+            emphasis: {
+              areaColor: "#F5DEB3",
+              shadowOffsetX: 0,
+              shadowOffsetY: 0,
+              borderWidth: 0,
+            },
+          },
+        },
+        series: [
+          {
+            name: "用户人数",
+            type: "map",
+            geoIndex: 0,
+            data: [],
+            areaColor: "#0FB8F0",
+          },
+        ],
+      },
     };
   },
-  created() {
-    this.getChartData();
-  },
   methods: {
-    getChartData() {
+    getData() {
       this.request.get("/admin").then((data) => {
         console.log(data);
-      });
-      this.viewCount.xAxis.data.push("1", "2", "3", "4", "5", "6", "7");
-      this.viewCount.series[0].data.push(100, 200, 50, 60, 40, 30, 100);
+        this.viewsCount = data.data.viewsCount;
+        this.messageCount = data.data.messageCount;
+        this.likeCount = data.data.likeCount;
+        this.articleCount = data.data.articleCount;
+        this.articleStatisticsList = data.data.articleStatisticsList;
+        if (data.data.uniqueViewDTOList != null) {
+          data.data.uniqueViewDTOList.forEach((item) => {
+            this.viewCount.xAxis.data.push(item.day);
+            this.viewCount.series[0].data.push(item.viewsCount);
+          });
+        }
 
-      this.loading = false;
+        if (data.data.categoryDTOList != null) {
+          data.data.categoryDTOList.forEach((item) => {
+            this.category.series[0].data.push({
+              value: item.articleCount,
+              name: item.categoryName,
+            });
+            this.category.legend.data.push(item.categoryName);
+          });
+        }
+
+        if (data.data.articleRankDTOList != null) {
+          data.data.articleRankDTOList.forEach((item) => {
+            this.articleRank.series[0].data.push(item.viewsCount);
+            this.articleRank.xAxis.data.push(item.articleTitle);
+          });
+        }
+
+        if (data.data.tagDTOList != null) {
+          data.data.tagDTOList.forEach((item) => {
+            this.tagDTOList.push({
+              id: item.id,
+              name: item.tagName,
+            });
+          });
+        }
+
+        this.loading = false;
+      });
+    },
+    listUserArea() {
+      this.request
+        .get("/admin/user/area", {
+          params: {
+            type: this.type,
+          },
+        })
+        .then(({ data }) => {
+          this.userAreaMap.series[0].data = data.data;
+        });
+    },
+  },
+  watch: {
+    type() {
+      this.listUserArea();
     },
   },
 };

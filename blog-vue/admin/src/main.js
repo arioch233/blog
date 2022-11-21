@@ -28,6 +28,9 @@ import "echarts/lib/chart/map";
 import "echarts/lib/component/tooltip";
 import "echarts/lib/component/legend";
 import "echarts/lib/component/title";
+// tagCloud
+import tagCloud from "v-tag-cloud";
+
 // 自定义js
 import config from "@/assets/js/config";
 // 自定义css
@@ -37,6 +40,7 @@ import "../src/assets/css/index.css";
 Vue.use(ElementUI); // ElementUI
 Vue.use(VueParticles); // VueParticles
 Vue.use(mavonEditor); // mavonEditor
+Vue.use(tagCloud); // tagCloud
 Vue.component("v-chart", ECharts); // ECharts
 Vue.config.productionTip = false;
 Vue.prototype.config = config; // config

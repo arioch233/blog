@@ -89,6 +89,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         Map<Object, Double> articleMap = redisService.zReverseRangeWithScore(ARTICLE_LIKE_COUNT, 0, 4);
         BlogBackInfoDTO blogBackInfoDTO = BlogBackInfoDTO.builder()
                 .viewsCount(viewsCount)
+                .likeCount(likeCount)
                 .articleCount(articleCount)
                 .messageCount(messageCount)
                 .uniqueViewDTOList(uniqueViewDTOList)
