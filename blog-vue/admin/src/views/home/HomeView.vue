@@ -212,6 +212,9 @@ export default {
   },
   methods: {
     getChartData() {
+      this.request.get("/admin").then((data) => {
+        console.log(data);
+      });
       this.viewCount.xAxis.data.push("1", "2", "3", "4", "5", "6", "7");
       this.viewCount.series[0].data.push(100, 200, 50, 60, 40, 30, 100);
 

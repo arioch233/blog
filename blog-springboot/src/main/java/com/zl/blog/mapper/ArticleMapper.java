@@ -4,8 +4,11 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Article;
 import com.zl.blog.pojo.dto.ArticleBackDTO;
+import com.zl.blog.pojo.dto.ArticleStatisticsDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import org.apache.ibatis.annotations.Param;
+
+import java.util.List;
 
 /**
  * @author 冷血毒舌
@@ -20,6 +23,13 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return 文章列表
      */
     Page<ArticleBackDTO> listArticlesBack(Page<ArticleBackDTO> page, @Param("condition") ConditionVO condition);
+
+    /**
+     * 文章统计
+     *
+     * @return
+     */
+    List<ArticleStatisticsDTO> listArticleStatistics();
 }
 
 

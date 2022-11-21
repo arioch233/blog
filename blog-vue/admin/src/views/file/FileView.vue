@@ -20,7 +20,7 @@
         type="danger"
         size="small"
         icon="el-icon-delete"
-        :disabled="this.fileIds.length === 0"
+        :disabled="this.fileIdList.length === 0"
         @click="isDelete = true"
       >
         批量删除
@@ -191,8 +191,7 @@ export default {
       fileUpload: false,
       fileList: [],
       keywords: null,
-      multipleSelection: [],
-      fileIds: [],
+      fileIdList: [],
       fileSuffix: null,
       fileSuffixList: [
         {
@@ -292,9 +291,9 @@ export default {
       });
     },
     selectionChange(fileList) {
-      this.fileIds = [];
+      this.fileIdList = [];
       fileList.forEach((item) => {
-        this.fileIds.push(item.id);
+        this.fileIdList.push(item.id);
       });
     },
     download(url) {
@@ -320,7 +319,7 @@ export default {
     deleteFile(id) {
       let param = {};
       if (id == null) {
-        param = { data: this.fileIds };
+        param = { data: this.fileIdList };
       } else {
         param = { data: [id] };
       }
@@ -336,10 +335,6 @@ export default {
     },
   },
   watch: {
-    isDelete() {
-      this.current = 1;
-      this.listFiles();
-    },
     fileSuffix() {
       this.current = 1;
       this.listFiles();

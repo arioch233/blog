@@ -35,13 +35,13 @@
     </select>
     <select id="listCategory" resultType="com.zl.blog.pojo.dto.CategoryDTO">
         SELECT
-        c.id
-        c.category_name
-        COUNT(c.id) AS category_count
+        c.id,
+        c.category_name,
+        COUNT( c.id ) AS category_count
         FROM
         tb_category c
-        LEFT JOIN (SELECT id, category_id FROM tb_article WHERE is_delete = 0 AND 'status' = 1) a
-        ON c.id = a.category_id
-        GROUP BY c.id
+        LEFT JOIN ( SELECT id, category_id FROM tb_article WHERE is_delete = 0 AND 'status' = 1 ) a ON c.id = a.category_id
+        GROUP BY
+        c.id
     </select>
 </mapper>
