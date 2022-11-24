@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.ArticleTag;
 import com.zl.blog.entity.Tag;
 import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.ArticleTagMapper;
 import com.zl.blog.mapper.TagMapper;
 import com.zl.blog.pojo.dto.TagBackDTO;
+import com.zl.blog.pojo.dto.TagDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.TagVO;
 import com.zl.blog.service.TagService;
@@ -84,8 +86,21 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
 
     // 前台
     @Override
-    public List<TagBackDTO> listTags() {
-        return null;
+    public PageResult<TagDTO> listTags() {
+        // 查询标签列表
+        List<Tag> tagList = tagMapper.selectList(null);
+        // 转换
+        List<TagDTO> tagDTOList = BeanCopyUtils.copyList(tagList, TagDTO.class).stream()
+                .map(item -> TagDTO.builder()
+                        .id(item.getId())
+                        .tagName(item.getTagName())
+                        .articleCount(articleTagMapper.selectCount(new LambdaQueryWrapper<ArticleTag>()
+                                .eq(ArticleTag::getTagId, item.getId())))
+                        .build())
+                .toList();
+        // 查询标签数量
+        Long count = tagMapper.selectCount(null);
+        return new PageResult<>(tagDTOList, count);
     }
 }
 

@@ -41,7 +41,7 @@ public class BlogBackInfoDTO {
     /**
      * 分类统计
      */
-    private List<CategoryBackDTO> categoryDTOList;
+    private List<CategoryDTO> categoryDTOList;
 
     /**
      * 标签列表

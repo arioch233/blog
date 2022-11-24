@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.Article;
 import com.zl.blog.entity.Category;
 import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.ArticleMapper;
 import com.zl.blog.mapper.CategoryMapper;
 import com.zl.blog.pojo.dto.CategoryBackDTO;
+import com.zl.blog.pojo.dto.CategoryDTO;
 import com.zl.blog.pojo.vo.CategoryVO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.service.CategoryService;
@@ -80,6 +82,15 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
             throw new ServiceException("删除失败，该分类下存在文章");
         }
         this.removeBatchByIds(categoryIds);
+    }
+
+    @Override
+    public PageResult<CategoryDTO> listCategory() {
+        // 查询分类列表
+        List<CategoryDTO> categoryDTOList = categoryMapper.listCategory();
+        // 查询数量
+        Long count = articleMapper.selectCount(null);
+        return new PageResult<>(categoryDTOList, count);
     }
 }
 

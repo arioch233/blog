@@ -33,7 +33,7 @@
         GROUP BY c.id
         ORDER BY c.id ASC
     </select>
-    <select id="listCategory" resultType="com.zl.blog.pojo.dto.CategoryBackDTO">
+    <select id="listCategory" resultType="com.zl.blog.pojo.dto.CategoryDTO">
         SELECT
         c.id,
         c.category_name,

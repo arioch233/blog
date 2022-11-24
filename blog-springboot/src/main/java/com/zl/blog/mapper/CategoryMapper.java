@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Category;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zl.blog.pojo.dto.CategoryBackDTO;
+import com.zl.blog.pojo.dto.CategoryDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -29,7 +30,7 @@ public interface CategoryMapper extends BaseMapper<Category> {
      *
      * @return {@link  List <CategoryDTO>} 分类列表
      */
-    List<CategoryBackDTO> listCategory();
+    List<CategoryDTO> listCategory();
 }
 
 
