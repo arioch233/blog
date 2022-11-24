@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 标签控制器
+ * 后台标签控制器
  *
  * @author 冷血毒舌
  * @create 2022/11/19 14:59
  */
-@Api(tags = "标签模块")
+@Api(tags = "后台标签模块")
 @RestController
 @RequestMapping(value = "/admin/tag")
 public class TagBackController {

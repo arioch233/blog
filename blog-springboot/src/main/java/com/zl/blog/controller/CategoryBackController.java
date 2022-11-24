@@ -12,12 +12,12 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * 分类控制器
+ * 后台分类控制器
  *
  * @author 冷血毒舌
  * @create 2022/11/19 15:30
  */
-@Api(tags = "分类模块")
+@Api(tags = "后台分类模块")
 @RestController
 @RequestMapping(value = "/admin/category")
 public class CategoryBackController {
