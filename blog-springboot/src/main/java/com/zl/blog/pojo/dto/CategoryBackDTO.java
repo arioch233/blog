@@ -8,28 +8,28 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 /**
- * 标签数据传输对象
+ * 后台分类数据传输对象
  *
  * @author 冷血毒舌
- * @create 2022/11/19 15:06
+ * @create 2022/11/19 15:37
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TagDTO {
+public class CategoryBackDTO {
     /**
      * id
      */
     private Integer id;
 
     /**
-     * 标签名
+     * 分类名
      */
-    private String tagName;
+    private String categoryName;
 
     /**
-     * 标签下的文章数量
+     * 分类下的文章数量
      */
     private Integer articleCount;
 

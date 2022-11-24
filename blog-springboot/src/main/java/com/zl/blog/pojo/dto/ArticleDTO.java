@@ -83,7 +83,7 @@ public class ArticleDTO {
     /**
      * 文章标签
      */
-    private List<TagDTO> tagDTOList;
+    private List<TagBackDTO> tagDTOList;
 
     /**
      * 上一篇文章

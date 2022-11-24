@@ -10,7 +10,7 @@ import com.zl.blog.entity.Tag;
 import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.ArticleTagMapper;
 import com.zl.blog.mapper.TagMapper;
-import com.zl.blog.pojo.dto.TagDTO;
+import com.zl.blog.pojo.dto.TagBackDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.TagVO;
 import com.zl.blog.service.TagService;
@@ -41,20 +41,20 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     private ArticleTagMapper articleTagMapper;
 
     @Override
-    public Page<TagDTO> listTagsBack(ConditionVO conditionVO) {
+    public Page<TagBackDTO> listTagsBack(ConditionVO conditionVO) {
         return tagMapper.listTagsBack(new Page<>(conditionVO.getCurrent(), conditionVO.getSize()), conditionVO);
     }
 
     @Override
-    public List<TagDTO> listTagBySearch(ConditionVO conditionVO) {
+    public List<TagBackDTO> listTagBySearch(ConditionVO conditionVO) {
         QueryWrapper<Tag> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByAsc("id");
         if (conditionVO.getKeywords() != null) {
             queryWrapper.like("tag_name", conditionVO.getKeywords());
         }
         List<Tag> tagList = list(queryWrapper);
-        List<TagDTO> tagDTOList = new ArrayList<>();
-        BeanCopyUtils.copyList(tagList, tagDTOList, TagDTO.class);
+        List<TagBackDTO> tagDTOList = new ArrayList<>();
+        BeanCopyUtils.copyList(tagList, tagDTOList, TagBackDTO.class);
         return tagDTOList;
     }
 
@@ -80,6 +80,12 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
             throw new ServiceException("删除失败，该标签下存在文章");
         }
         this.removeBatchByIds(tagIds);
+    }
+
+    // 前台
+    @Override
+    public List<TagBackDTO> listTags() {
+        return null;
     }
 }
 

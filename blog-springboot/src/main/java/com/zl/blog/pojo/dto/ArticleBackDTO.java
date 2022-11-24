@@ -58,7 +58,7 @@ public class ArticleBackDTO {
     /**
      * 文章标签
      */
-    private List<TagDTO> tagDTOList;
+    private List<TagBackDTO> tagDTOList;
 
     /**
      * 文章类型

@@ -3,7 +3,7 @@ package com.zl.blog.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.zl.blog.entity.Category;
-import com.zl.blog.pojo.dto.CategoryDTO;
+import com.zl.blog.pojo.dto.CategoryBackDTO;
 import com.zl.blog.pojo.vo.CategoryVO;
 import com.zl.blog.pojo.vo.ConditionVO;
 
@@ -18,9 +18,9 @@ import java.util.List;
  */
 public interface CategoryService extends IService<Category> {
 
-    Page<CategoryDTO> listCategoryBack(ConditionVO conditionVO);
+    Page<CategoryBackDTO> listCategoryBack(ConditionVO conditionVO);
 
-    List<CategoryDTO> listCategoryBySearch(ConditionVO conditionVO);
+    List<CategoryBackDTO> listCategoryBySearch(ConditionVO conditionVO);
 
     void saveOrUpdateCategory(CategoryVO categoryVO);
 

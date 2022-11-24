@@ -15,7 +15,7 @@
         id,category_name,create_time,
         update_time
     </sql>
-    <select id="listCategoryBack" resultType="com.zl.blog.pojo.dto.CategoryDTO">
+    <select id="listCategoryBack" resultType="com.zl.blog.pojo.dto.CategoryBackDTO">
         SELECT
         c.id,
         c.category_name,
@@ -33,7 +33,7 @@
         GROUP BY c.id
         ORDER BY c.id ASC
     </select>
-    <select id="listCategory" resultType="com.zl.blog.pojo.dto.CategoryDTO">
+    <select id="listCategory" resultType="com.zl.blog.pojo.dto.CategoryBackDTO">
         SELECT
         c.id,
         c.category_name,

@@ -82,9 +82,9 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询文章统计
         List<ArticleStatisticsDTO> articleStatisticsDTOList = articleMapper.listArticleStatistics();
         // 查询分类数据
-        List<CategoryDTO> categoryDTOList = categoryMapper.listCategory();
+        List<CategoryBackDTO> categoryDTOList = categoryMapper.listCategory();
         // 查询标签数据
-        List<TagDTO> tagDTOList = BeanCopyUtils.copyList(tagMapper.selectList(null), TagDTO.class);
+        List<TagBackDTO> tagDTOList = BeanCopyUtils.copyList(tagMapper.selectList(null), TagBackDTO.class);
         // 查询redis访问量前五的文章
         Map<Object, Double> articleMap = redisService.zReverseRangeWithScore(ARTICLE_LIKE_COUNT, 0, 4);
         BlogBackInfoDTO blogBackInfoDTO = BlogBackInfoDTO.builder()

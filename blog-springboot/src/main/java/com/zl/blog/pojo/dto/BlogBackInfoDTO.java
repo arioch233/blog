@@ -41,12 +41,12 @@ public class BlogBackInfoDTO {
     /**
      * 分类统计
      */
-    private List<CategoryDTO> categoryDTOList;
+    private List<CategoryBackDTO> categoryDTOList;
 
     /**
      * 标签列表
      */
-    private List<TagDTO> tagDTOList;
+    private List<TagBackDTO> tagDTOList;
 
     /**
      * 文章统计列表

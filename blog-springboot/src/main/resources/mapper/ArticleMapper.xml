@@ -28,7 +28,7 @@
         <result property="isDelete" column="is_delete"/>
         <result property="status" column="status"/>
         <result property="createTime" column="create_time"/>
-        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagDTO">
+        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagBackDTO">
             <id property="id" column="tag_id"/>
             <result property="tagName" column="tag_name"/>
         </collection>
@@ -43,7 +43,7 @@
         <result property="type" column="type"/>
         <result property="isTop" column="is_top"/>
         <result property="createTime" column="create_time"/>
-        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagDTO">
+        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagBackDTO">
             <id property="id" column="tag_id"/>
             <result property="tagName" column="tag_name"/>
         </collection>
@@ -59,7 +59,7 @@
         <result property="type" column="type"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
-        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagDTO">
+        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagBackDTO">
             <id property="id" column="tag_id"/>
             <result property="tagName" column="tag_name"/>
         </collection>

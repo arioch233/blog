@@ -3,7 +3,7 @@ package com.zl.blog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Tag;
-import com.zl.blog.pojo.dto.TagDTO;
+import com.zl.blog.pojo.dto.TagBackDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -21,9 +21,9 @@ public interface TagMapper extends BaseMapper<Tag> {
      * 查询后台标签
      *
      * @param condition 条件
-     * @return {@link Page<TagDTO>} 标签列表
+     * @return {@link Page< TagBackDTO >} 标签列表
      */
-    Page<TagDTO> listTagsBack(Page<TagDTO> page, @Param("condition") ConditionVO condition);
+    Page<TagBackDTO> listTagsBack(Page<TagBackDTO> page, @Param("condition") ConditionVO condition);
 
     /**
      * 根据文章id查询标签名

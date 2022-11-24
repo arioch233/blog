@@ -15,7 +15,7 @@
         id,tag_name,create_time,
         update_time
     </sql>
-    <select id="listTagsBack" resultType="com.zl.blog.pojo.dto.TagDTO">
+    <select id="listTagsBack" resultType="com.zl.blog.pojo.dto.TagBackDTO">
         SELECT
         t.id,
         tag_name,

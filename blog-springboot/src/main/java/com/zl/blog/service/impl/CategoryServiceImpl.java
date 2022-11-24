@@ -10,7 +10,7 @@ import com.zl.blog.entity.Category;
 import com.zl.blog.exception.ServiceException;
 import com.zl.blog.mapper.ArticleMapper;
 import com.zl.blog.mapper.CategoryMapper;
-import com.zl.blog.pojo.dto.CategoryDTO;
+import com.zl.blog.pojo.dto.CategoryBackDTO;
 import com.zl.blog.pojo.vo.CategoryVO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.service.CategoryService;
@@ -41,20 +41,20 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
     private ArticleMapper articleMapper;
 
     @Override
-    public Page<CategoryDTO> listCategoryBack(ConditionVO conditionVO) {
+    public Page<CategoryBackDTO> listCategoryBack(ConditionVO conditionVO) {
         return categoryMapper.listCategoryBack(new Page<>(conditionVO.getCurrent(), conditionVO.getSize()), conditionVO);
     }
 
     @Override
-    public List<CategoryDTO> listCategoryBySearch(ConditionVO conditionVO) {
+    public List<CategoryBackDTO> listCategoryBySearch(ConditionVO conditionVO) {
         QueryWrapper<Category> queryWrapper = new QueryWrapper<>();
         queryWrapper.orderByAsc("id");
         if (conditionVO.getKeywords() != null) {
             queryWrapper.like("category_name", conditionVO.getKeywords());
         }
         List<Category> categoryList = list(queryWrapper);
-        List<CategoryDTO> categoryDTOList = new ArrayList<>();
-        BeanCopyUtils.copyList(categoryList, categoryDTOList, CategoryDTO.class);
+        List<CategoryBackDTO> categoryDTOList = new ArrayList<>();
+        BeanCopyUtils.copyList(categoryList, categoryDTOList, CategoryBackDTO.class);
         return categoryDTOList;
     }
 
