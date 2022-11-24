@@ -20,10 +20,10 @@ import java.util.List;
  * @author 冷血毒舌
  * @create 2022/11/19 16:00
  */
-@Api(tags = "文章管理模块")
+@Api(tags = "后台文章管理模块")
 @RestController
 @RequestMapping(value = "/admin/article")
-public class ArticleController {
+public class ArticleBackController {
     @Autowired
     private ArticleService articleService;
 

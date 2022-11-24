@@ -20,7 +20,7 @@ import java.util.List;
 @Api(tags = "分类模块")
 @RestController
 @RequestMapping(value = "/admin/category")
-public class CategoryController {
+public class CategoryBackController {
 
     @Autowired
     private CategoryService categoryService;

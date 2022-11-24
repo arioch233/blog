@@ -20,7 +20,7 @@ import java.util.List;
 @Api(tags = "标签模块")
 @RestController
 @RequestMapping(value = "/admin/tag")
-public class TagController {
+public class TagBackController {
     @Autowired
     private TagService tagService;
 
