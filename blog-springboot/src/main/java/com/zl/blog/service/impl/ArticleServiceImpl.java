@@ -1,6 +1,7 @@
 package com.zl.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
@@ -16,17 +17,17 @@ import com.zl.blog.mapper.ArticleMapper;
 import com.zl.blog.mapper.ArticleTagMapper;
 import com.zl.blog.mapper.CategoryMapper;
 import com.zl.blog.mapper.TagMapper;
-import com.zl.blog.pojo.dto.ArticleBackDTO;
-import com.zl.blog.pojo.dto.ArticleDTO;
-import com.zl.blog.pojo.dto.ArticleHomeDTO;
-import com.zl.blog.pojo.dto.ArticleSearchDTO;
+import com.zl.blog.pojo.dto.*;
 import com.zl.blog.pojo.vo.ArticleTopVO;
 import com.zl.blog.pojo.vo.ArticleVO;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.pojo.vo.DeleteVO;
 import com.zl.blog.service.ArticleService;
 import com.zl.blog.service.ArticleTagService;
+import com.zl.blog.service.RedisService;
 import com.zl.blog.service.TagService;
+import com.zl.blog.utils.BeanCopyUtils;
+import com.zl.blog.utils.PageUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,9 +35,12 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 import static com.zl.blog.common.CommonConst.FALSE;
+import static com.zl.blog.common.RedisPrefixConst.*;
+import static com.zl.blog.common.enums.ArticleStatusEnum.PUBLIC;
 
 /**
  * 文章服务实现
@@ -61,6 +65,9 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     private ArticleTagMapper articleTagMapper;
     @Autowired
     private ArticleTagService articleTagService;
+
+    @Autowired
+    private RedisService redisService;
 
     @Override
     public Page<ArticleBackDTO> listArticlesBack(ConditionVO conditionVO) {
@@ -188,12 +195,70 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public List<ArticleHomeDTO> listArticles() {
-        return null;
+        return articleMapper.listArticles(PageUtils.getLimitCurrent(), PageUtils.getSize());
     }
 
     @Override
     public ArticleDTO getArticleById(Integer articleId) {
-        return null;
+        // 查询推荐文章
+        CompletableFuture<List<ArticleRecommendDTO>> recommendArticleList = CompletableFuture.supplyAsync(() -> articleMapper.listRecommendArticles(articleId));
+        // 查询最新文章
+        CompletableFuture<List<ArticleRecommendDTO>> newestArticleList = CompletableFuture.supplyAsync(() -> {
+            List<Article> articleList = articleMapper.selectList(new LambdaQueryWrapper<Article>()
+                    .select(Article::getId, Article::getArticleTitle, Article::getArticleCover, Article::getCreateTime).eq(Article::getIsDelete, FALSE)
+                    .eq(Article::getStatus, PUBLIC.getStatus()).orderByDesc(Article::getId).last("limit 5"));
+            return BeanCopyUtils.copyList(articleList, ArticleRecommendDTO.class);
+        });
+        // 查询id对应文章
+        ArticleDTO article = articleMapper.getArticleById(articleId);
+        if (Objects.isNull(article)) {
+            throw new ServiceException("文章不存在");
+        }
+        // 更新文章浏览量
+        updateArticleViewsCount(articleId);
+        // 查询上一篇下一篇文章
+        Article lastArticle = articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .select(Article::getId, Article::getArticleTitle, Article::getArticleCover).eq(Article::getIsDelete, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus())
+                .lt(Article::getId, articleId)
+                .orderByDesc(Article::getId).last("limit 1"));
+        Article nextArticle = articleMapper.selectOne(new LambdaQueryWrapper<Article>()
+                .select(Article::getId, Article::getArticleTitle, Article::getArticleCover).eq(Article::getIsDelete, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus())
+                .gt(Article::getId, articleId).orderByAsc(Article::getId)
+                .last("limit 1"));
+        article.setLastArticle(BeanCopyUtils.copyObject(lastArticle, ArticlePaginationDTO.class));
+        article.setNextArticle(BeanCopyUtils.copyObject(nextArticle, ArticlePaginationDTO.class));
+        // 封装点赞量和浏览量
+        Double score = redisService.zScore(ARTICLE_VIEWS_COUNT, articleId);
+        if (Objects.nonNull(score)) {
+            article.setViewsCount(score.intValue());
+        }
+        article.setLikeCount((Integer) redisService.hGet(ARTICLE_LIKE_COUNT, articleId.toString()));
+        // 封装文章信息
+        try {
+            article.setRecommendArticleList(recommendArticleList.get());
+            article.setNewestArticleList(newestArticleList.get());
+        } catch (Exception e) {
+            log.error(StrUtil.format("堆栈信息:{}", ExceptionUtil.stacktraceToString(e)));
+        }
+        return article;
+    }
+
+    /**
+     * 更新文章浏览量
+     *
+     * @param articleId 文章id
+     */
+    public void updateArticleViewsCount(Integer articleId) {
+        // 判断是否第一次访问，增加浏览量
+//        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
+//        if (!articleSet.contains(articleId)) {
+//            articleSet.add(articleId);
+//            session.setAttribute(ARTICLE_SET, articleSet);
+//            // 浏览量+1
+//            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
+//        }
     }
 
     @Override
@@ -203,7 +268,24 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
 
     @Override
     public void saveArticleLike(Integer articleId) {
+        // 判断是否点赞
+        String articleLikeKey = ARTICLE_USER_LIKE + 1;
+        if (redisService.sIsMember(articleLikeKey, articleId)) {
+            // 点过赞则删除文章id
+            redisService.sRemove(articleLikeKey, articleId);
+            // 文章点赞量-1
+            redisService.hDecr(ARTICLE_LIKE_COUNT, articleId.toString(), 1L);
+        } else {
+            // 未点赞则增加文章id
+            redisService.sAdd(articleLikeKey, articleId);
+            // 文章点赞量+1
+            redisService.hIncr(ARTICLE_LIKE_COUNT, articleId.toString(), 1L);
+        }
+    }
 
+    @Override
+    public List<ArticleNewDTO> listArticlesNew() {
+        return articleMapper.listArticlesNew();
     }
 }
 

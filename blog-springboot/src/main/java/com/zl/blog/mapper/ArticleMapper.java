@@ -3,8 +3,7 @@ package com.zl.blog.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Article;
-import com.zl.blog.pojo.dto.ArticleBackDTO;
-import com.zl.blog.pojo.dto.ArticleStatisticsDTO;
+import com.zl.blog.pojo.dto.*;
 import com.zl.blog.pojo.vo.ConditionVO;
 import org.apache.ibatis.annotations.Param;
 
@@ -30,6 +29,33 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return
      */
     List<ArticleStatisticsDTO> listArticleStatistics();
+
+
+    List<ArticleRecommendDTO> listRecommendArticles(Integer articleId);
+
+    /**
+     * 查询首页文章
+     *
+     * @param current 页码
+     * @param size    大小
+     * @return 文章列表
+     */
+    List<ArticleHomeDTO> listArticles(@Param("current") Long current, @Param("size") Long size);
+
+    /**
+     * 根据id查询文章
+     *
+     * @param articleId 文章id
+     * @return 文章信息
+     */
+    ArticleDTO getArticleById(@Param("articleId") Integer articleId);
+
+    /**
+     * 获取最新文章列表
+     *
+     * @return
+     */
+    List<ArticleNewDTO> listArticlesNew();
 }
 
 
