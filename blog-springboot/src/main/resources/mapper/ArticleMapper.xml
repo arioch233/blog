@@ -64,6 +64,18 @@
             <result property="tagName" column="tag_name"/>
         </collection>
     </resultMap>
+    <resultMap id="articlePreviewResultMap" type="com.zl.blog.pojo.dto.ArticlePreviewDTO">
+        <id property="id" column="id"/>
+        <result property="articleCover" column="article_cover"/>
+        <result property="articleTitle" column="article_title"/>
+        <result property="createTime" column="create_time"/>
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <collection property="tagDTOList" ofType="com.zl.blog.pojo.dto.TagDTO">
+            <id property="id" column="id"/>
+            <result property="tagName" column="tag_name"/>
+        </collection>
+    </resultMap>
 
 
     <sql id="Base_Column_List">
@@ -171,7 +183,6 @@
         AND a.is_delete = 0
         AND a.status = 1
     </select>
-
     <select id="listArticles" resultMap="articleHomeResultMap">
         SELECT
         a.id,
@@ -246,5 +257,49 @@
         AND ( SELECT COUNT( 1 ) FROM tb_article WHERE a.is_delete = 0 AND a.STATUS = 1 ) &lt; 3
         ORDER BY
         a.create_time DESC
+    </select>
+    <select id="listArticlesByCondition" resultMap="articlePreviewResultMap">
+        SELECT
+        a.id,
+        article_cover,
+        article_title,
+        a.create_time,
+        a.category_id,
+        category_name,
+        t.id AS tag_id,
+        t.tag_name
+        FROM
+        (
+        SELECT
+        id,
+        article_cover,
+        article_title,
+        article_content,
+        create_time,
+        category_id
+        FROM
+        tb_article
+        <where>
+            <if test="condition.categoryId != null">
+                category_id = #{condition.categoryId}
+            </if>
+            <if test="condition.tagId != null">
+                id IN (
+                SELECT
+                article_id
+                FROM
+                tb_article_tag
+                WHERE
+                tag_id = #{condition.tagId})
+            </if>
+        </where>
+        AND is_delete = 0
+        AND status = 1
+        ORDER BY id DESC
+        LIMIT #{current},#{size}
+        ) a
+        JOIN tb_category c ON a.category_id = c.id
+        JOIN tb_article_tag atg ON a.id = atg.article_id
+        JOIN tb_tag t ON t.id = atg.tag_id
     </select>
 </mapper>

@@ -44,4 +44,6 @@ public interface ArticleService extends IService<Article> {
     void saveArticleLike(Integer articleId);
 
     List<ArticleNewDTO> listArticlesNew();
+
+    ArticlePreviewListDTO listArticlesByCondition(ConditionVO conditionVO);
 }

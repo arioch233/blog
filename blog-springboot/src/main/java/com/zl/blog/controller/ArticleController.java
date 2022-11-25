@@ -33,6 +33,19 @@ public class ArticleController {
         return Result.success(articleService.listArticles());
     }
 
+
+    /**
+     * 根据查询条件获取文章
+     *
+     * @param conditionVO
+     * @return
+     */
+    @ApiOperation("根据查询条件获取文章")
+    @GetMapping("/condition")
+    public Result listArticlesByCondition(ConditionVO conditionVO) {
+        return Result.success(articleService.listArticlesByCondition(conditionVO));
+    }
+
     /**
      * 获取最新文章（3条）
      *

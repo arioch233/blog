@@ -287,6 +287,23 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
     public List<ArticleNewDTO> listArticlesNew() {
         return articleMapper.listArticlesNew();
     }
+
+    @Override
+    public ArticlePreviewListDTO listArticlesByCondition(ConditionVO condition) {
+        // 查询文章
+        List<ArticlePreviewDTO> articlePreviewDTOList = articleMapper.listArticlesByCondition(PageUtils.getLimitCurrent(), PageUtils.getSize(), condition);
+        // 搜索条件对应名(标签或分类名)
+        String name;
+        if (Objects.nonNull(condition.getCategoryId())) {
+            name = categoryMapper.selectOne(new LambdaQueryWrapper<Category>().select(Category::getCategoryName)
+                    .eq(Category::getId, condition.getCategoryId())).getCategoryName();
+        } else {
+            name = tagService.getOne(new LambdaQueryWrapper<Tag>()
+                    .select(Tag::getTagName).eq(Tag::getId, condition.getTagId())).getTagName();
+        }
+        return ArticlePreviewListDTO.builder().articlePreviewDTOList(articlePreviewDTOList).name(name).build();
+    }
+
 }
 
 

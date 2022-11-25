@@ -56,6 +56,16 @@ public interface ArticleMapper extends BaseMapper<Article> {
      * @return
      */
     List<ArticleNewDTO> listArticlesNew();
+
+    /**
+     * 根据查询条件搜索文章
+     *
+     * @param current     页码
+     * @param size        大小
+     * @param conditionVO 条件
+     * @return 预览文章列表
+     */
+    List<ArticlePreviewDTO> listArticlesByCondition(@Param("current") Long current, @Param("size") Long size, @Param("condition") ConditionVO conditionVO);
 }
 
 
