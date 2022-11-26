@@ -94,4 +94,14 @@ public class ArticleController {
         return Result.success();
     }
 
+    /**
+     * 获取文章归档
+     *
+     * @return 归档信息
+     */
+    @ApiOperation("获取文章归档")
+    @GetMapping("/archive")
+    public Result listArticleArchives() {
+        return Result.success(articleService.listArticleArchives());
+    }
 }

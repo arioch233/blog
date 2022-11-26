@@ -2,6 +2,7 @@ package com.zl.blog.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.entity.Article;
 import com.zl.blog.pojo.dto.*;
 import com.zl.blog.pojo.vo.ArticleTopVO;
@@ -46,4 +47,6 @@ public interface ArticleService extends IService<Article> {
     List<ArticleNewDTO> listArticlesNew();
 
     ArticlePreviewListDTO listArticlesByCondition(ConditionVO conditionVO);
+
+    PageResult<ArchiveDTO> listArticleArchives();
 }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.CollectionUtils;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zl.blog.common.PageResult;
 import com.zl.blog.common.enums.ArticleStatusEnum;
 import com.zl.blog.entity.Article;
 import com.zl.blog.entity.ArticleTag;
@@ -304,6 +305,22 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         return ArticlePreviewListDTO.builder().articlePreviewDTOList(articlePreviewDTOList).name(name).build();
     }
 
+    @Override
+    public PageResult<ArchiveDTO> listArticleArchives() {
+        Page<Article> page = new Page<>(PageUtils.getCurrent(), PageUtils.getSize());
+        // 获取文章列表
+        Page<Article> articlePage = articleMapper.selectPage(page, new LambdaQueryWrapper<Article>()
+                .select(Article::getId, Article::getArticleTitle, Article::getCreateTime)
+                .eq(Article::getIsDelete, FALSE)
+                .eq(Article::getStatus, PUBLIC.getStatus())
+                .orderByDesc(Article::getCreateTime));
+        // 转换
+        List<ArchiveDTO> archiveList = BeanCopyUtils.copyList(articlePage.getRecords(), ArchiveDTO.class);
+        // 获取文章数量
+        Long count = (long) archiveList.size();
+        // 封装数据
+        return new PageResult<>(archiveList, count);
+    }
 }
 
 
