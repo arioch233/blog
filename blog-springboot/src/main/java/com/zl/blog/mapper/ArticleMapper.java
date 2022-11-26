@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Article;
 import com.zl.blog.pojo.dto.*;
 import com.zl.blog.pojo.vo.ConditionVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @description 针对表【tb_article】的数据库操作Service实现
  * @createDate 2022-11-19 15:46:06
  */
+@Mapper
 public interface ArticleMapper extends BaseMapper<Article> {
     /**
      * 查询后台文章

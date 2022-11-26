@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateTime;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.zl.blog.entity.UniqueView;
 import com.zl.blog.pojo.dto.UniqueViewDTO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * @description 针对表【tb_unique_view】的数据库操作Service实现
  * @createDate 2022-11-21 15:18:18
  */
+@Mapper
 public interface UniqueViewMapper extends BaseMapper<UniqueView> {
 
     /**

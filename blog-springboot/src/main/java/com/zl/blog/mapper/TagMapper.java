@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zl.blog.entity.Tag;
 import com.zl.blog.pojo.dto.TagBackDTO;
 import com.zl.blog.pojo.vo.ConditionVO;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
  * @description 针对表【tb_tag】的数据库操作Service实现
  * @createDate 2022-11-19 14:59:43
  */
+@Mapper
 public interface TagMapper extends BaseMapper<Tag> {
 
 
