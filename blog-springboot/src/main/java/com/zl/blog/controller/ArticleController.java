@@ -3,6 +3,7 @@ package com.zl.blog.controller;
 import com.zl.blog.common.Result;
 import com.zl.blog.pojo.vo.ConditionVO;
 import com.zl.blog.service.ArticleService;
+import com.zl.blog.strategy.context.SearchStrategyContext;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,9 @@ public class ArticleController {
 
     @Autowired
     private ArticleService articleService;
+
+    @Autowired
+    private SearchStrategyContext searchStrategyContext;
 
     /**
      * 获取首页文章列表
@@ -66,7 +70,8 @@ public class ArticleController {
     @ApiOperation("文章搜索")
     @GetMapping("/search")
     public Result listArticlesBySearch(ConditionVO condition) {
-        return Result.success(articleService.listArticlesBySearch(condition));
+//        return Result.success(articleService.listArticlesBySearch(condition));
+        return Result.success(searchStrategyContext.executeSearchStrategy(condition.getKeywords()));
     }
 
     /**

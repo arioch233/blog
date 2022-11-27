@@ -74,4 +74,14 @@ public class CommonConst {
      */
     public static final String DEFAULT_NICKNAME = "用户";
 
+
+    /**
+     * 高亮标签前缀
+     */
+    public static final String PRE_TAG = "<span style='color:#f47466'>";
+
+    /**
+     * 高亮标签后缀
+     */
+    public static final String POST_TAG = "</span>";
 }
