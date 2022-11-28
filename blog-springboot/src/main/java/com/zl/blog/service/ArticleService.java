@@ -40,7 +40,6 @@ public interface ArticleService extends IService<Article> {
 
     ArticleDTO getArticleById(Integer articleId);
 
-    List<ArticleSearchDTO> listArticlesBySearch(ConditionVO conditionVO);
 
     void saveArticleLike(Integer articleId);
 
@@ -49,4 +48,6 @@ public interface ArticleService extends IService<Article> {
     ArticlePreviewListDTO listArticlesByCondition(ConditionVO conditionVO);
 
     PageResult<ArchiveDTO> listArticleArchives();
+
+    LikeInfoDTO getLikeInfo();
 }

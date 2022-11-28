@@ -30,17 +30,17 @@ public class RedisPrefixConst {
     /**
      * 文章浏览量
      */
-    public static final String ARTICLE_VIEWS_COUNT = "article_views_count";
+    public static final String ARTICLE_VIEWS_COUNT = "blog_article_views_count";
 
     /**
      * 文章点赞量
      */
-    public static final String ARTICLE_LIKE_COUNT = "article_like_count";
+    public static final String ARTICLE_LIKE_COUNT = "blog_article_like_count";
 
     /**
      * 用户点赞文章
      */
-    public static final String ARTICLE_USER_LIKE = "article_user_like:";
+    public static final String ARTICLE_USER_LIKE = "blog_article_user_like:";
 
     /**
      * 评论点赞量

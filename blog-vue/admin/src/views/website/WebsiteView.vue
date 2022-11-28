@@ -194,6 +194,12 @@
               <el-radio :label="1">开启</el-radio>
             </el-radio-group>
           </el-form-item>
+          <el-form-item label="是否开启评论">
+            <el-radio-group v-model="websiteConfigForm.isComment">
+              <el-radio :label="0">关闭</el-radio>
+              <el-radio :label="1">开启</el-radio>
+            </el-radio-group>
+          </el-form-item>
           <el-form-item label="评论审核">
             <el-radio-group v-model="websiteConfigForm.isCommentReview">
               <el-radio :label="0">关闭</el-radio>

@@ -100,6 +100,17 @@ public class ArticleController {
     }
 
     /**
+     * 获取点赞信息
+     *
+     * @return
+     */
+    @ApiOperation("获取点赞信息")
+    @GetMapping("/like")
+    public Result getLikeInfo() {
+        return Result.success(articleService.getLikeInfo());
+    }
+
+    /**
      * 获取文章归档
      *
      * @return 归档信息

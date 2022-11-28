@@ -113,6 +113,12 @@ public class WebsiteConfigVO {
     private String userAvatar;
 
     /**
+     * 是否开启评论功能
+     */
+    @ApiModelProperty(name = "isComment", value = "是否开启评论功能", required = true, dataType = "String")
+    private Integer isComment;
+
+    /**
      * 是否评论审核
      */
     @ApiModelProperty(name = "isCommentReview", value = "是否评论审核", required = true, dataType = "Integer")

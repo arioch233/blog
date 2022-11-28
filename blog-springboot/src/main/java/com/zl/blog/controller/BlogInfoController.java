@@ -1,7 +1,9 @@
 package com.zl.blog.controller;
 
 import com.zl.blog.common.Result;
+import com.zl.blog.handle.context.ApplicationContextHolder;
 import com.zl.blog.service.BlogInfoService;
+import com.zl.blog.service.WebsiteConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class BlogInfoController {
     @Autowired
     private BlogInfoService blogInfoService;
+
+    @Autowired
+    private WebsiteConfigService websiteConfigService;
 
     /**
      * 上传访客信息
@@ -54,5 +59,19 @@ public class BlogInfoController {
     @GetMapping("/")
     public Result getBlogHomeInfo() {
         return Result.success(blogInfoService.getBlogHomeInfo());
+    }
+
+    /**
+     * 关于关于我
+     *
+     * @return
+     */
+    @ApiOperation(value = "获取关于我")
+    @GetMapping("/about")
+    private Result getAbout() {
+        if (websiteConfigService == null) {
+            websiteConfigService = ApplicationContextHolder.getContext().getBean(WebsiteConfigService.class);
+        }
+        return Result.success(websiteConfigService.getAbout(), null);
     }
 }

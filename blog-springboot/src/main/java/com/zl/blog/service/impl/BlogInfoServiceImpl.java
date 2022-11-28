@@ -86,7 +86,7 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         // 查询标签数据
         List<TagBackDTO> tagDTOList = BeanCopyUtils.copyList(tagMapper.selectList(null), TagBackDTO.class);
         // 查询redis访问量前五的文章
-        Map<Object, Double> articleMap = redisService.zReverseRangeWithScore(ARTICLE_LIKE_COUNT, 0, 4);
+        Map<Object, Double> articleMap = redisService.zReverseRangeWithScore(ARTICLE_VIEWS_COUNT, 0, 4);
         BlogBackInfoDTO blogBackInfoDTO = BlogBackInfoDTO.builder()
                 .viewsCount(viewsCount)
                 .likeCount(likeCount)

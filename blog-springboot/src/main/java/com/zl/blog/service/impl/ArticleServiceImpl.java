@@ -28,17 +28,21 @@ import com.zl.blog.service.ArticleTagService;
 import com.zl.blog.service.RedisService;
 import com.zl.blog.service.TagService;
 import com.zl.blog.utils.BeanCopyUtils;
+import com.zl.blog.utils.CommonUtils;
 import com.zl.blog.utils.PageUtils;
+import com.zl.blog.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.List;
-import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
+import static com.zl.blog.common.CommonConst.ARTICLE_SET;
 import static com.zl.blog.common.CommonConst.FALSE;
 import static com.zl.blog.common.RedisPrefixConst.*;
 import static com.zl.blog.common.enums.ArticleStatusEnum.PUBLIC;
@@ -53,7 +57,11 @@ import static com.zl.blog.common.enums.ArticleStatusEnum.PUBLIC;
 @Service
 public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         implements ArticleService {
+    @Autowired
+    private HttpSession session;
 
+    @Autowired
+    private HttpServletRequest request;
     @Resource
     private ArticleMapper articleMapper;
     @Resource
@@ -253,24 +261,20 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
      */
     public void updateArticleViewsCount(Integer articleId) {
         // 判断是否第一次访问，增加浏览量
-//        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
-//        if (!articleSet.contains(articleId)) {
-//            articleSet.add(articleId);
-//            session.setAttribute(ARTICLE_SET, articleSet);
-//            // 浏览量+1
-//            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
-//        }
+        Set<Integer> articleSet = CommonUtils.castSet(Optional.ofNullable(session.getAttribute(ARTICLE_SET)).orElseGet(HashSet::new), Integer.class);
+        if (!articleSet.contains(articleId)) {
+            articleSet.add(articleId);
+            session.setAttribute(ARTICLE_SET, articleSet);
+            // 浏览量+1
+            redisService.zIncr(ARTICLE_VIEWS_COUNT, articleId, 1D);
+        }
     }
 
-    @Override
-    public List<ArticleSearchDTO> listArticlesBySearch(ConditionVO conditionVO) {
-        return null;
-    }
 
     @Override
     public void saveArticleLike(Integer articleId) {
         // 判断是否点赞
-        String articleLikeKey = ARTICLE_USER_LIKE + 1;
+        String articleLikeKey = ARTICLE_USER_LIKE + UserUtils.generateUserMd5(request);
         if (redisService.sIsMember(articleLikeKey, articleId)) {
             // 点过赞则删除文章id
             redisService.sRemove(articleLikeKey, articleId);
@@ -320,6 +324,18 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article>
         Long count = (long) archiveList.size();
         // 封装数据
         return new PageResult<>(archiveList, count);
+    }
+
+    @Override
+    public LikeInfoDTO getLikeInfo() {
+        String md5 = UserUtils.generateUserMd5(request);
+        // 查询账号点赞信息
+        Set<Object> articleLikeSet = redisService.sMembers(ARTICLE_USER_LIKE + md5);
+        Set<Object> commentLikeSet = redisService.sMembers(COMMENT_USER_LIKE + md5);
+        return LikeInfoDTO.builder()
+                .articleLikeSet(articleLikeSet)
+                .commentLikeSet(commentLikeSet)
+                .build();
     }
 }
 

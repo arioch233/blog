@@ -84,4 +84,10 @@ public class CommonConst {
      * 高亮标签后缀
      */
     public static final String POST_TAG = "</span>";
+
+
+    /**
+     * 文章集合
+     */
+    public static final String ARTICLE_SET = "articleSet";
 }

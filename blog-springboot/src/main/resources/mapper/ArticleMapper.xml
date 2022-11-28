@@ -254,9 +254,9 @@
         WHERE
         a.is_delete = 0
         AND a.STATUS = 1
-        AND ( SELECT COUNT( 1 ) FROM tb_article WHERE a.is_delete = 0 AND a.STATUS = 1 ) &lt; 3
         ORDER BY
         a.create_time DESC
+        LIMIT 0,3
     </select>
     <select id="listArticlesByCondition" resultMap="articlePreviewResultMap">
         SELECT
