@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.blog.mapper.CommentMapper">
+
+    <resultMap id="BaseResultMap" type="com.zl.blog.entity.Comment">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="userId" column="user_id" jdbcType="INTEGER"/>
+        <result property="topicId" column="topic_id" jdbcType="INTEGER"/>
+        <result property="commentContent" column="comment_content" jdbcType="VARCHAR"/>
+        <result property="replyUserId" column="reply_user_id" jdbcType="INTEGER"/>
+        <result property="parentId" column="parent_id" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="TINYINT"/>
+        <result property="isDelete" column="is_delete" jdbcType="TINYINT"/>
+        <result property="isReview" column="is_review" jdbcType="TINYINT"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,user_id,topic_id,
+        comment_content,reply_user_id,parent_id,
+        type,is_delete,is_review,
+        create_time,update_time
+    </sql>
+    <select id="listComments" resultType="com.zl.blog.pojo.dto.CommentDTO">
+        SELECT
+        u.tourist_nickname AS nickname,
+        u.tourist_avatar AS avatar,
+        u.tourist_website AS web_site,
+        c.user_id,
+        c.id,
+        c.comment_content,
+        c.create_time
+        FROM
+        tb_comment c
+        JOIN tb_tourist u ON c.user_id = u.id
+        <where>
+            <if test="commentVO.topicId != null">
+                topic_id = #{commentVO.topicId}
+            </if>
+            AND type = #{commentVO.type}
+            AND c.is_review = 1
+            AND parent_id IS NULL
+        </where>
+        ORDER BY
+        c.id DESC
+        LIMIT #{current},#{size}
+    </select>
+    <select id="listReplies" resultType="com.zl.blog.pojo.dto.ReplyDTO">
+        SELECT
+        *
+        FROM
+        (
+        SELECT
+        c.user_id,
+        u.tourist_nickname AS nickname,
+        u.tourist_avatar AS avatar,
+        u.tourist_website AS web_site,
+        c.reply_user_id,
+        r.tourist_nickname AS reply_nickname,
+        r.tourist_website AS reply_web_site,
+        c.id,
+        c.parent_id,
+        c.comment_content,
+        c.create_time,
+        row_number () over ( PARTITION BY parent_id ORDER BY create_time ASC ) row_num
+        FROM
+        tb_comment c
+        JOIN tb_tourist u ON c.user_id = u.id
+        JOIN tb_tourist r ON c.reply_user_id = r.id
+        WHERE
+        c.is_review = 1
+        AND
+        parent_id IN
+        (
+        <foreach collection="commentIdList" item="commentId" separator=",">
+            #{commentId}
+        </foreach>
+        )
+        ) t
+        WHERE
+        4 > row_num
+    </select>
+    <select id="listRepliesByCommentId" resultType="com.zl.blog.pojo.dto.ReplyDTO">
+        SELECT
+        c.user_id,
+        u.tourist_nickname AS nickname,
+        u.tourist_avatar AS avatar,
+        u.tourist_website AS web_site,
+        c.reply_user_id,
+        r.tourist_nickname as reply_nickname,
+        r.tourist_website as reply_web_site,
+        c.id,
+        c.parent_id,
+        c.comment_content,
+        c.create_time
+        FROM
+        tb_comment c
+        JOIN tb_tourist u ON c.user_id = u.id
+        JOIN tb_tourist r ON c.reply_user_id = r.id
+        WHERE
+        c.is_review = 1
+        AND
+        parent_id =#{commentId}
+        ORDER BY
+        c.id ASC
+        LIMIT #{current}, #{size}
+    </select>
+    <select id="listReplyCountByCommentId" resultType="com.zl.blog.pojo.dto.ReplyCountDTO">
+        SELECT
+        parent_id as comment_id,
+        count(1) AS reply_count
+        FROM
+        tb_comment
+        WHERE
+        is_review = 1
+        AND
+        parent_id IN
+        <foreach open="(" collection="commentIdList" item="commentId" separator="," close=")">
+            #{commentId}
+        </foreach>
+        GROUP BY
+        parent_id
+    </select>
+    <select id="listCommentCountByTopicIds" resultType="com.zl.blog.pojo.dto.CommentCountDTO">
+        SELECT
+        topic_id as id,
+        COUNT( 1 ) AS comment_count
+        FROM
+        tb_comment
+        WHERE
+        topic_id IN
+        <foreach open="(" collection="topicIdList" item="topicId" separator="," close=")">
+            #{topicId}
+        </foreach>
+        AND
+        parent_id IS NULL
+        GROUP BY
+        topic_id
+    </select>
+    <select id="listCommentBackDTO" resultType="com.zl.blog.pojo.dto.CommentBackDTO">
+        SELECT
+        c.id,
+        u.tourist_avatar AS avatar,
+        u.tourist_nickname AS nickname,
+        r.tourist_nickname AS reply_nickname,
+        a.article_title,
+        c.comment_content,
+        c.type,
+        c.create_time,
+        c.is_review
+        FROM
+        tb_comment c
+        LEFT JOIN tb_article a ON c.topic_id = a.id
+        LEFT JOIN tb_tourist u ON c.user_id = u.id
+        LEFT JOIN tb_tourist r ON c.reply_user_id = r.id
+        <where>
+            <if test="condition.type != null">
+                c.type = #{condition.type}
+            </if>
+            <if test="condition.isReview != null">
+                and c.is_review = #{condition.isReview}
+            </if>
+            <if test="condition.keywords != null">
+                and u.tourist_nickname like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+        ORDER BY
+        id DESC
+        LIMIT #{current},#{size}
+    </select>
+    <select id="countCommentDTO" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        from
+        tb_comment c
+        LEFT JOIN tb_tourist u ON c.user_id = u.id
+        <where>
+            <if test="condition.type != null">
+                c.type = #{condition.type}
+            </if>
+            <if test="condition.isReview != null">
+                and c.is_review = #{condition.isReview}
+            </if>
+            <if test="condition.keywords != null">
+                and u.tourist_nickname like concat('%',#{condition.keywords},'%')
+            </if>
+        </where>
+    </select>
+</mapper>

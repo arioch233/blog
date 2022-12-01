@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://www.mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zl.blog.mapper.TouristMapper">
+
+    <resultMap id="BaseResultMap" type="com.zl.blog.entity.Tourist">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="touristAuth" column="tourist_auth" jdbcType="VARCHAR"/>
+        <result property="touristNickname" column="tourist_nickname" jdbcType="VARCHAR"/>
+        <result property="touristAvatar" column="tourist_avatar" jdbcType="VARCHAR"/>
+        <result property="touristEmail" column="tourist_email" jdbcType="VARCHAR"/>
+        <result property="touristWebsite" column="tourist_website" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,tourist_auth,tourist_nickname,
+        tourist_avatar,tourist_email,tourist_website
+    </sql>
+</mapper>
