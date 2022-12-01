@@ -165,7 +165,7 @@
             v-if="uploadMode"
             class="upload-cover"
             drag
-            action="http://localhost:9090/admin/file/image/upload"
+            action="/api/file/article/upload"
             multiple
             :before-upload="beforeUpload"
             :on-success="uploadCover"
@@ -327,7 +327,7 @@ export default {
       let formdata = new FormData();
       if (file.size / 1024 < this.config.UPLOAD_SIZE) {
         formdata.append("file", file);
-        this.request.post("/admin/file/image/upload", formdata).then((data) => {
+        this.request.post("/file/article/upload", formdata).then((data) => {
           this.$refs.md.$img2Url(pos, data.data);
         });
       } else {
@@ -339,11 +339,9 @@ export default {
               "file",
               new window.File([res], file.name, { type: file.type })
             );
-            this.request
-              .post("/admin/file/image/upload", formdata)
-              .then((data) => {
-                this.$refs.md.$img2Url(pos, data.data);
-              });
+            this.request.post("/file/article/upload", formdata).then((data) => {
+              this.$refs.md.$img2Url(pos, data.data);
+            });
           });
       }
     },

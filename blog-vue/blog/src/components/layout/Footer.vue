@@ -1,10 +1,10 @@
 <template>
   <v-footer app padless absolute>
     <div class="footer-wrap">
-      <div>
-        我的博客已运行&nbsp;:&nbsp;<span>{{ currentTime }}</span>
-        (*๓´╰╯`๓)
-      </div>
+      <!--      <div>-->
+      <!--        我的博客已运行&nbsp;:&nbsp;<span>{{ currentTime }}</span>-->
+      <!--        (*๓´╰╯`๓)-->
+      <!--      </div>-->
       <div>
         ©{{ blogInfo.websiteConfig.websiteCreateTime | year }} -
         {{ new Date().getFullYear() }} By
