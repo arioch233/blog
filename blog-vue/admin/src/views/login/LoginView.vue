@@ -125,7 +125,7 @@ export default {
 /*}*/
 
 .background-image {
-  background-image: url("../../assets/images/bg-login.png");
+  background-image: url("../../assets/images/login-bg.jpg");
   width: 100%;
   height: 100vh;
 }
