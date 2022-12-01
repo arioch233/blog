@@ -4,10 +4,7 @@ import cn.hutool.core.collection.CollectionUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.zl.blog.entity.Article;
-import com.zl.blog.mapper.ArticleMapper;
-import com.zl.blog.mapper.CategoryMapper;
-import com.zl.blog.mapper.IPageMapper;
-import com.zl.blog.mapper.TagMapper;
+import com.zl.blog.mapper.*;
 import com.zl.blog.pojo.dto.*;
 import com.zl.blog.pojo.vo.WebsiteConfigVO;
 import com.zl.blog.service.BlogInfoService;
@@ -19,6 +16,7 @@ import com.zl.blog.utils.IpUtils;
 import eu.bitwalker.useragentutils.Browser;
 import eu.bitwalker.useragentutils.OperatingSystem;
 import eu.bitwalker.useragentutils.UserAgent;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -38,6 +36,7 @@ import static com.zl.blog.common.enums.ArticleStatusEnum.PUBLIC;
  * @author 冷血毒舌
  * @create 2022/11/14 23:46
  */
+@Slf4j
 @Service
 public class BlogInfoServiceImpl implements BlogInfoService {
 
@@ -65,6 +64,9 @@ public class BlogInfoServiceImpl implements BlogInfoService {
     @Autowired
     private UniqueViewService uniqueViewService;
 
+    @Autowired
+    private CommentMapper commentMapper;
+
     @Override
     public BlogBackInfoDTO getBlogBackInfo() {
         // 查询访问量
@@ -74,9 +76,16 @@ public class BlogInfoServiceImpl implements BlogInfoService {
         Long articleCount = articleMapper.selectCount(new LambdaQueryWrapper<Article>()
                 .eq(Article::getIsDelete, FALSE));
         // 查询点赞量
-        Long likeCount = 666L;
+        long likeCount = 0L;
+        Map<String, Object> map = redisService.hGetAll(ARTICLE_LIKE_COUNT);
+        if (Objects.nonNull(map)) {
+            Set<String> likeKeys = map.keySet();
+            for (String key : likeKeys) {
+                likeCount += Long.parseLong(map.get(key).toString());
+            }
+        }
         // 查询留言量
-        Long messageCount = 666L;
+        Long messageCount = commentMapper.selectCount(null);
         // 查询一周用户量
         List<UniqueViewDTO> uniqueViewDTOList = uniqueViewService.listUniqueView();
         // 查询文章统计

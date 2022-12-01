@@ -45,12 +45,12 @@ public class RedisPrefixConst {
     /**
      * 评论点赞量
      */
-    public static final String COMMENT_LIKE_COUNT = "comment_like_count";
+    public static final String COMMENT_LIKE_COUNT = "blog_comment_like_count";
 
     /**
      * 用户点赞评论
      */
-    public static final String COMMENT_USER_LIKE = "comment_user_like:";
+    public static final String COMMENT_USER_LIKE = "blog_comment_user_like:";
 
     /**
      * 网站配置

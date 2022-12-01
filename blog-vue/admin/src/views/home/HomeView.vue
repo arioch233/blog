@@ -25,7 +25,7 @@
             />
           </div>
           <div class="card-desc">
-            <div class="card-title">点赞量</div>
+            <div class="card-title">文章点赞量</div>
             <div class="card-count">{{ likeCount }}</div>
           </div>
         </el-card>
@@ -50,7 +50,7 @@
             <i class="el-icon-s-comment" style="color: #36a3f7" />
           </div>
           <div class="card-desc">
-            <div class="card-title">留言量</div>
+            <div class="card-title">文章评论量</div>
             <div class="card-count">{{ messageCount }}</div>
           </div>
         </el-card>
