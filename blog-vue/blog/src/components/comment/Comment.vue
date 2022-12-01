@@ -326,7 +326,6 @@ export default {
           params: param,
         })
         .then((data) => {
-          console.log(data);
           if (this.current === 1) {
             this.commentList = data.data.recordList;
           } else {
