@@ -58,8 +58,8 @@ export default {
   data() {
     return {
       loginForm: {
-        username: "1738252674@qq.com",
-        password: "232531",
+        username: "",
+        password: "",
         code: "",
       },
       rules: {

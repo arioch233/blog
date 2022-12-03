@@ -1,7 +1,7 @@
 # 自定义
 .idea
 blog-vue/*.iml
-
+deploy
 
 # ---> Vue
 # gitignore template for Vue.js projects

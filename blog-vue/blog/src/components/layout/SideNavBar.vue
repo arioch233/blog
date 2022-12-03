@@ -53,11 +53,11 @@
           <i class="iconfont iconguidang" /> 归档
         </router-link>
       </div>
-      <div class="menus-item">
-        <router-link to="/albums">
-          <i class="iconfont iconxiangce1" /> 相册
-        </router-link>
-      </div>
+      <!--      <div class="menus-item">-->
+      <!--        <router-link to="/albums">-->
+      <!--          <i class="iconfont iconxiangce1" /> 相册-->
+      <!--        </router-link>-->
+      <!--      </div>-->
       <div class="menus-item">
         <router-link to="/categories">
           <i class="iconfont iconfenlei" /> 分类

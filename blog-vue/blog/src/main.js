@@ -30,7 +30,7 @@ import "./assets/css/markdown/markdown.css";
 Vue.config.productionTip = false;
 Vue.prototype.request = request; //request
 Vue.use(Toast); // Toast
-Vue.use(animated); // animate
+// Vue.use(animated); // animate
 Vue.use(InfiniteLoading); // InfiniteLoading
 Vue.use(VueImageSwipe); //vueImageSwipe
 // 自定义过滤器
