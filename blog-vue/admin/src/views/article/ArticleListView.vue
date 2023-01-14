@@ -436,7 +436,7 @@ export default {
       this.listArticles();
     },
     editArticle(id) {
-      this.$router.push({ path: "/admin/articles/" + id });
+      this.$router.push({ path: "/articles/" + id });
     },
     updateArticleDelete(id) {
       let param = {};
@@ -607,7 +607,7 @@ export default {
         })
         .then((data) => {
           this.articleList = data.data.records;
-          this.count = data.data.count;
+          this.count = data.data.total;
           this.loading = false;
         });
     },

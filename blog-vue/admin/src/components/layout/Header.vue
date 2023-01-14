@@ -53,7 +53,7 @@
           {{ item.name }}
           <i
             class="el-icon-close"
-            v-if="item.path !== '/admin'"
+            v-if="item.path !== '/'"
             @click.stop="removeTab(item)"
           />
         </span>
@@ -76,7 +76,7 @@ export default {
     let matched = this.$route.matched.filter((item) => item.name);
     const first = matched[0];
     if (first && first.name !== "首页") {
-      matched = [{ path: "/admin", name: "首页" }].concat(matched);
+      matched = [{ path: "/", name: "首页" }].concat(matched);
     }
     this.breadcrumbList = matched;
     //保存当前页标签
@@ -108,7 +108,7 @@ export default {
     },
     handleCommand(command) {
       if (command === "personal") {
-        this.$router.push({ path: "/admin/personal" });
+        this.$router.push({ path: "/personal" });
       }
       if (command === "logout") {
         // 调用注销接口
@@ -123,14 +123,14 @@ export default {
             this.$store.commit("resetTab");
             // 清空用户菜单
             resetRouter();
-            this.$router.push({ path: "/admin/login" });
+            this.$router.push({ path: "/login" });
           }
         });
       }
     },
     closeAllTab() {
       this.$store.commit("resetTab");
-      this.$router.push({ path: "/admin" });
+      this.$router.push({ path: "/" });
     },
     fullScreen() {
       let element = document.documentElement;

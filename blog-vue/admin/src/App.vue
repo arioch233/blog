@@ -12,6 +12,8 @@ export default {
     if (user != null) {
       this.$store.commit("login", user);
       generateMenu();
+    } else {
+      this.$router.push({ path: "/login" });
     }
     this.request.post("/report");
   },

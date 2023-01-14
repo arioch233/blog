@@ -95,7 +95,7 @@ export default {
                 title: "登录成功",
                 message: data.message,
               });
-              that.$router.push({ path: "/admin" });
+              that.$router.push({ path: "/" });
             } else {
               this.$notify.error({
                 title: "登录失败",

@@ -6,7 +6,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     collapse: false,
-    tabList: [{ name: "首页", path: "/admin" }],
+    tabList: [{ name: "首页", path: "/" }],
     userId: null,
     token: null,
     roleList: null,
@@ -27,7 +27,7 @@ export default new Vuex.Store({
       state.tabList.splice(index, 1);
     },
     resetTab(state) {
-      state.tabList = [{ name: "首页", path: "/admin" }];
+      state.tabList = [{ name: "首页", path: "/" }];
     },
     trigger(state) {
       state.collapse = !state.collapse;

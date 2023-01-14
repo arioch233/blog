@@ -225,9 +225,10 @@ export default {
   created() {
     const path = this.$route.path;
     const arr = path.split("/");
-    const articleId = arr[3];
+    const articleId = arr[2];
     if (articleId) {
       this.request.get("/admin/article/" + articleId).then((data) => {
+        console.log(data);
         this.article = data.data;
       });
     } else {
@@ -363,7 +364,7 @@ export default {
             this.$store.commit("removeTab", "修改文章");
           }
           sessionStorage.removeItem("article");
-          this.$router.push({ path: "/admin/article-list" });
+          this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
             message: "保存草稿成功",
@@ -412,7 +413,7 @@ export default {
             this.$store.commit("removeTab", "修改文章");
           }
           sessionStorage.removeItem("article");
-          this.$router.push({ path: "/admin/article-list" });
+          this.$router.push({ path: "/article-list" });
           this.$notify.success({
             title: "成功",
             message: data.message,

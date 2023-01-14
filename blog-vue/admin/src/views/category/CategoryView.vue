@@ -205,7 +205,7 @@ export default {
         })
         .then((data) => {
           this.categoryList = data.data.records;
-          this.count = data.data.count;
+          this.count = data.data.total;
           this.loading = false;
         });
     },
